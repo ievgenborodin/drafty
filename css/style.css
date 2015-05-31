@@ -1,0 +1,133 @@
+@font-face {
+  font-family: 'Cent';
+  src: url('fonts/Cent.eot');
+  src: url('fonts/Cent.eot?iefix') format('eot'),
+       url('fonts/Cent.ttf') format('truetype');
+}
+body{
+    font-family: 'Cent';
+}
+.title{
+    background: black;
+    color: white;
+    border-radius: 5px;
+}
+.title h2{
+    font-style: italic;
+    float: left;
+}
+.title span{
+    display: inline-block;
+    cursor: pointer;
+    padding-right: 0.3em;
+}
+#canvas, #saveImg{
+    cursor: pointer; 
+    background: #000; 
+    border: 1px solid grey; 
+    background: white;
+}    
+label {
+    margin-left: 1em;
+}
+#saveImg{
+    display: none;  
+}    
+#color{
+    width: 100%;
+    height: 2.5em;
+}
+.tpad{
+    padding-top: 2em;
+}
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(to right, #ccc 0%, #ccc 100%);
+    background-size: 150px 5px;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    outline: none;
+    zoom: 130%;
+    display: block;
+    margin: auto;
+    margin-bottom: 30px;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background: black;
+    position: relative;
+    z-index: 3;
+}
+input[type="range"]::-webkit-slider-thumb:after {
+    content: " ";
+    width: 160px;
+    height: 5px;
+    position: absolute;
+    z-index: 1;
+    right: 10px;
+    top: 2.5px;
+    background: grey;
+}
+#edit-left .col-xs-6{
+    padding-right: 0;
+    padding-left: 0.2em; 
+    border-radius: 5px;
+}
+.active-tool{
+    background-color: lightgreen;
+}
+.black{
+    color: #333;
+}
+.white{
+    color: #eee;
+}
+.disabled {
+    color: grey;
+}
+
+@media(min-width: 380px){ 
+    .title{
+        margin-bottom: 0.4em;
+    }
+    .title h2, .title #undo-redo{
+        font-size: 1.5em;
+        margin-top: 0.35em;
+    }
+}
+
+@media(min-width: 580px){ 
+    .title{
+        margin-bottom: 0.4em;
+    }
+    .title h2, .title #undo-redo{
+        font-size: 1.7em;
+        margin-top: 0.35em;
+    }
+}
+
+@media(min-width: 992px){ 
+    .title{
+        margin-bottom: 0.4em;
+    }
+    .title h2, .title #undo-redo{
+        font-size: 2em;
+        margin-top: 0.35em;
+    }
+}
+
+@media(min-width: 1200px){ 
+    .title{
+        margin-bottom: 0.4em;
+    }
+    .title h2, .title #undo-redo{
+        font-size: 2.5em;
+        margin-top: 0.35em;
+    }
+}
