@@ -2,32 +2,61 @@ $(function(){
 /*  ////    VARIABLES   //// */
 var canvas = document.getElementById('canvas'),
     context = canvas.getContext('2d'),
-    saveImg = document.getElementById('saveImg'),
+    undo = $('#undo').addClass('disabled'),        
+    redo = $('#redo').addClass('disabled'),
+    tools = $('.tool-cols > div'),
+    tinyText = $('#tiny-text'),
+    undoIndex = 0,
     lenx=0,leny=0, x0=0, y0=0,
     radius1=0, radius2=0, radius=0, 
     tool = '',
     draw = false, color = 'black', size=1, loc, loc0,
     inputText='',
-    undo = $('#undo').off("click").addClass('disabled'), undoIndex = 0,
-    redo = $('#redo').off("click").addClass('disabled'),
-    tools = $('.tool-cols > div');
+    modLink=0, textFont;
     
-/*  ////    SAVE SURFACE func   /// */    
-saveSurface = function() {
-    surface = context.getImageData(0,0,canvas.width,canvas.height);
-};   
-    
-/*  ////    RESTORE SURFACE func   /// */    
-restoreSurface = function() {
-    context.putImageData(surface, 0, 0);
-};
-
 /* ///   Collisions     ////  */
-collides = function(a, b) {
-    return a.x < b.x + b.xn && a.x > b.x &&
-        a.y < b.y + b.yn && a.y > b.y;
+inObject = function(cur, obj) {
+    var collide = false;
+    if (obj.figure){
+        switch (obj.tool) {
+            case 'box':
+            case 'background':
+               collide = cur.x < obj.x + obj.xn && cur.x > obj.x &&
+            cur.y < obj.y + obj.yn && cur.y > obj.y; 
+                break;
+            case 'circle':
+                collide = obj.radius > Math.sqrt(Math.pow((obj.x - cur.x),2)+Math.pow((obj.y - cur.y),2));
+                break;
+            case 'text':
+                console.log("text width = "+obj.x + context.measureText(obj.puts).width + ", text height = " + obj.y + obj.size);
+               collide = cur.x < obj.x + context.measureText(obj.puts).width && cur.x > obj.x && cur.y < obj.y + obj.size && cur.y > obj.y; 
+                break;
+        }
+    }
+    return collide;
 };
 
+/*  ///     Message     ////  */    
+message = function(textParam, timeParam){
+    var divMessage = $('#message'),
+        textMessage = textParam || "You can't move background!",
+        timeMessage = timeParam || 1000;
+    divMessage.html(textMessage).show();
+    setTimeout(function(){
+        divMessage.hide();                    
+    }, timeMessage);
+} 
+        
+/* ///   reRender object     ////  */
+reRender = function() {
+    for (var i=1; i<acts.length; i++)
+        if(!acts[i].figure && acts[i].active)
+            acts[i].draw(canvas, context);
+    for (var i=0; i<acts.length; i++)
+        if(acts[i].figure && acts[i].active)
+            acts[i].draw(canvas, context);
+}
+    
 /*	/////    WINDOW TO CANVAS	///// */
 wtc = function(canvas, x, y) {
 	var bbox = canvas.getBoundingClientRect();
@@ -35,60 +64,62 @@ wtc = function(canvas, x, y) {
 			y: y - bbox.top * (canvas.height / bbox.height)
 	};
 };
-    
-/*   BACKGROUND as acts[0]  */    
-setTimeout(function(){
-acts.push(Object.create(Act).params("box", "white", 0, 0, 0, canvas.width, canvas.height, true));    
-acts[0].draw(canvas,context);
-}, 0);    
-    
+
 /*  ////////////////////   EVENTS   ///////////////////////// */
 /*  ///     TOOL buttons    /// */
 tools.on('click',function(){
-    canvas.style.display = 'block';
-    saveImg.style.display = 'none';
     tool = $(this).attr('id');
     tools.removeClass("active-tool");
     $(this).addClass("active-tool");
+    if (tool === 'save'){
+        $.post("save.php", {
+            data: canvas.toDataURL("image/png")
+        }, function (file) {
+            window.location.href =  "download.php?path=" + file
+        });
+    }
+    else if (tool === 'text')
+       tinyText.show(); 
+    else 
+        tinyText.hide();
 });
 
-/*  ///     SAVE button     /// */
-$('#save').on('click',function(){
-    tools.removeClass("active-tool");
-    $(this).addClass("active-tool");
-    $.post("save.php", {
-        data: canvas.toDataURL("image/png")
-    }, function (file) {
-        window.location.href =  "download.php?path=" + file
-    });
-});
+/* ////     Console check   ///// */   
+$('#chk').on('click', function(){
+    console.log("Undo Index = "+ undoIndex);
+});    
+    
     
 /*  ////    UNDO    ////   */
-undo.on('click', function(e){
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    for(var i=0; i < undoIndex; i++){
-        acts[i].draw(canvas, context);
-    }
-    undoIndex--;
-    if (undoIndex === 0){
-        $(this).off("click").addClass('disabled');    
-    }
-    redo.on("click").removeClass('disabled');
+undo.on('click', function(e){    
+    acts[undoIndex].active = false;
+    
+    /*  code before   */
+    if (undoIndex > 0){
+        --undoIndex;
+        //acts[undoIndex].active = true;
+        redo.removeClass('disabled');
+    } 
+    if (undoIndex === 0)
+        $(this).addClass('disabled');
+    
+    reRender();
 });
     
 /*  ////    REDO    ////   */
 redo.on('click', function(e){
-    undoIndex++;
-    undo.on("click").removeClass('disabled');
     
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    for(var i=0; i < undoIndex; i++){
-        acts[i].draw(canvas, context);
+    if (undoIndex < acts.length-1){
+        //acts[undoIndex].active = false;
+        undoIndex++;
+        undo.removeClass('disabled');
     }
+    if (undoIndex === acts.length-1)
+        $(this).addClass('disabled');
+    /*  code below   */
+    acts[undoIndex].active = true;
     
-    if (undoIndex >= acts.length){
-        $(this).off("click").addClass('disabled');    
-    }   
+    reRender();
 });    
     
 /*  COLOR CHANGE  */
@@ -102,12 +133,10 @@ $('#size').change(function(){
 });        
     
 /*  KEY INPUT PRESS    */
-document.onkeypress = function(e){
-    inputText += String.fromCharCode(e.which);
-    
+document.onkeypress = function(e){  
     if (tool==='text'){
-        restoreSurface();
-        context.fillText(inputText, loc0.x, loc0.y); 
+        acts[acts.length-1].puts += String.fromCharCode(e.which);
+        reRender();
     }
 }
     
@@ -124,12 +153,30 @@ canvas.ontouchstart = function(e) {
  	  
  	 downEvents();
  }
-
+  
 function downEvents(){
- 	draw = true;
+ 	if (acts.length === 0){
+        /*   BACKGROUND as acts[0]  */      
+        acts[0] = Object.create(Act).params(true, "background", "white", 0, 0, 0, canvas.width, canvas.height, true);
+    }
+    draw = true;
+    redo.addClass('disabled');
     context.strokeStyle = color;
     context.fillStyle = color;
+    acts.length = undoIndex + 1;
     switch (tool) {
+        case 'hand':
+            for(var i=acts.length-1; i>=0; i--){
+                if (i && inObject(loc0, acts[i])){
+                    undoIndex++;
+                    modLink = acts[undoIndex] = Object.create(Act).params(false, tool, acts[i], acts[i].x, acts[i].y);
+                    break; 
+                }
+                if (!i){
+                    message();
+                }
+            }
+            break;
         case 'star':
             context.lineWidth = 1;
             context.beginPath();
@@ -139,43 +186,30 @@ function downEvents(){
             };
             context.stroke();
             break;
-        
         case 'bucket':
-            if (acts.length > 0){
-                for(var i=acts.length-1; i>=0; i--){
-                    if (collides(loc0, acts[i])){
-                        if (acts[i].tool === 'box'){
-                            acts.push(Object.create(Act).params(acts[i].tool, color, 1, acts[i].x + acts[i].size*0.5, acts[i].y + acts[i].size*0.5, acts[i].xn - acts[i].size, acts[i].yn-acts[i].size, true));
-                        }
-                        else if (acts[i].tool === 'circle'){
-                            acts.push(Object.create(Act).params(acts[i].tool, color, 1, acts[i].x, acts[i].y, acts[i].radius , true));
-                        }
-                        else if (acts[i].tool === 'star'){
-                            acts.push(Object.create(Act).params(acts[i].tool, color, size, acts[i].x, acts[i].y, acts[i].radius-acts[i].size));
-                        }
-                        acts[acts.length-1].draw(canvas, context);
-                        break;
-                    } 
+            for(var i=acts.length-1; i>=0; i--){
+                if (inObject(loc0, acts[i])){
+                    undoIndex++;
+                    acts[undoIndex] = Object.create(Act).params(false, tool, acts[i], acts[i].color, color);
+                    break; 
                 }
-            }  else {     
-                context.fillRect(0,0,canvas.width,canvas.height);
             }
+            reRender();
             break;
         case 'box':
         case 'circle':
         case 'line':
         case 'brush':
-            acts.push(Object.create(Act).params(tool, color, size, loc0.x, loc0.y));
-            saveSurface();
+            ++undoIndex;
+            acts[undoIndex] = Object.create(Act).params(true, tool, color, size, loc0.x, loc0.y);
             break;
         case 'text':
-            inputText = '';
-            context.font = (size*2)+10 + "px sans-serif";
-            
-            saveSurface();
+            undoIndex++;
+            textFont = size * 2 + 10;
+            acts[undoIndex] = Object.create(Act).params(true, tool, color, textFont, loc0.x, loc0.y);
+            tinyText.val('').css({ fontSize: textFont, fontFamily: "sans-serif", left: loc0.x, top: loc0.y - textFont}).focus();
 		    break;
     }
-    context.beginPath();     
 }
     
 
@@ -195,14 +229,18 @@ canvas.ontouchmove = function(e) {
 
 function moveEvents(){
     if (draw){
-        context.strokeStyle = color;
-        context.lineWidth = size;
-        context.fillStyle = color;    
         switch (tool){
+            case 'hand':
+                if (modLink!==0){
+                    modLink.x = loc.x;
+                    modLink.y = loc.y;
+                    reRender();
+                }
+                break;
             case 'brush': 
                 context.fillRect(loc.x - size/2, loc.y - size/2, size,size); 
                 acts[acts.length-1].dots.push(new Dot(loc.x, loc.y));
-                acts
+                break;
             case 'pencil':
                 context.beginPath();
                 //context.moveTo(loc0.x, loc0.y);
@@ -215,32 +253,24 @@ function moveEvents(){
                 context.clearRect(loc.x - size/2, loc.y - size/2, size,size); 
                 break;
             case 'box':
-            lenx = loc.x - loc0.x;
-            leny = loc.y - loc0.y;
-            acts[acts.length-1].x = x0 = (lenx >=0) ? loc0.x : loc0.x + lenx;
-            acts[acts.length-1].y = y0 = (leny >=0) ? loc0.y : loc0.y + leny;
-                
-            lenx=Math.abs(lenx);
-            leny=Math.abs(leny); 
-            
-            restoreSurface();
-            context.strokeRect(x0,y0,lenx,leny);
+                lenx = loc.x - loc0.x;
+                leny = loc.y - loc0.y;
+                acts[acts.length-1].x = x0 = (lenx >=0) ? loc0.x : loc0.x + lenx;
+                acts[acts.length-1].y = y0 = (leny >=0) ? loc0.y : loc0.y + leny;
+                acts[acts.length-1].xn = lenx=Math.abs(lenx);
+                acts[acts.length-1].yn = leny=Math.abs(leny);    
+                reRender();
                 break;
             case 'circle':
-            radius1 = Math.abs(loc.x - loc0.x);
-            radius2 = Math.abs(loc.y - loc0.y);
-            radius = (radius1-radius2>=0) ? radius1 : radius2;
-            restoreSurface();
-            context.beginPath();
-            context.arc(loc0.x, loc0.y, radius, 0, Math.PI*2);
-            context.stroke();
+                radius1 = Math.abs(loc.x - loc0.x);
+                radius2 = Math.abs(loc.y - loc0.y);
+                acts[acts.length-1].radius = radius = (radius1-radius2>=0) ? radius1 : radius2;
+                reRender();
                 break;
             case 'line':
-                restoreSurface();
-            context.beginPath();
-            context.moveTo(loc0.x, loc0.y);
-            context.lineTo(loc.x, loc.y);
-            context.stroke();
+                acts[acts.length-1].xn = loc.x;
+                acts[acts.length-1].yn = loc.y;
+                reRender();
                 break;
         }
     }
@@ -261,39 +291,13 @@ canvas.ontouchend = function(e) {
 
 function upEvents(){
     draw = false;
-    switch (tool) {
-        case 'box':
-            restoreSurface();
-            acts[acts.length-1].xn = lenx;
-            acts[acts.length-1].yn = leny;
-            acts[acts.length-1].draw(canvas, context);
-            undoIndex++;
-            break;
-        case 'circle':
-            restoreSurface();
-            acts[acts.length-1].radius = radius;
-            acts[acts.length-1].draw(canvas, context);
-            undoIndex++;
-            break;
-        case 'line':
-            restoreSurface();
-            acts[acts.length-1].xn = loc.x;
-            acts[acts.length-1].yn = loc.y;
-            acts[acts.length-1].draw(canvas, context);
-            undoIndex++;
-            break;
-        case 'brush':
-        case 'pencil':
-            undoIndex++;
-            break;
-    }
-    if (acts.length > 0){
-        undo.on("click").removeClass('disabled');
-    }
+    if (undoIndex > 0)
+        undo.removeClass('disabled');
     loc = {};
     loc0 = {};
     radius1 = radius2 = radius = 0;
     lenx = leny = 0;
+    modLink = 0;
 }
 
 $('#canvas').attr('width', $('#edit-right').width() ).attr('height', $('#edit-right').width()/1.25 );    

@@ -1,8 +1,10 @@
 <?php
-$file = trim($_GET['path']);
+
+$file = str_replace('"', "", trim($_GET['path']));
 
 // force user to download the image
 if (file_exists($file)) {
+    ob_start();
     header('Content-Description: File Transfer');
     header('Content-Type: image/png');
     header('Content-Disposition: attachment; filename='.basename($file));
@@ -15,8 +17,8 @@ if (file_exists($file)) {
     flush();
     readfile($file);
     exit;
-}
+    }
 else {
-    echo "$file not found";
+    echo "$file not found.";
 }
 ?>
