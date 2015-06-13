@@ -14,6 +14,25 @@ var canvas = document.getElementById('canvas'),
     inputText='',
     modLink=0, textFont;
     
+
+/*	SCREEN STATE	*/
+function screenState(){
+	width = window.innerWidth;
+	height = window.innerHeight;
+	landscape = width-height>0 ? true : false;
+	if (landscape)
+		scrX = scrY = (width > 1300) ? height * 0.7 : height;
+	else 
+		scrY = scrX = width;
+    if (scrX < 500){
+        $('#Live').html("L");
+        $('#Brush').html("B");
+    }
+//	canvas.width = (scrX<400) ? scrX : scrX * 0.6;
+//	canvas.height = (scrY<400) ? scrY : scrY * 0.6;
+}    
+    
+  screenState();  
 /* ///   Collisions     ////  */
 inObject = function(cur, obj) {
     var collide = false;
@@ -47,16 +66,33 @@ message = function(textParam, timeParam){
     }, timeMessage);
 } 
         
-/* ///   reRender object     ////  */
+/* ///   RE-RENDER acts     ////  */
 reRender = function() {
+    /* inactive mods */
+    for (var i=acts.length-1; i>0; i--)
+        if(!acts[i].figure && !acts[i].active && acts[i].link !== undefined)
+            if (acts[i].link.active)
+                acts[i].draw(canvas, context);
+    /* active mods */
     for (var i=1; i<acts.length; i++)
-        if(!acts[i].figure && acts[i].active)
-            acts[i].draw(canvas, context);
+        if(!acts[i].figure && acts[i].active && acts[i].link !== undefined)
+            if (acts[i].link.active)
+                acts[i].draw(canvas, context);
+    /* figures */
     for (var i=0; i<acts.length; i++)
         if(acts[i].figure && acts[i].active)
             acts[i].draw(canvas, context);
 }
-    
+  
+/* ////     MODS kings function  //// */
+modsKing = function(king){
+    for(var i = 0; i<undoIndex; i++)
+        if (!acts[i].figure)
+            if (acts[i].tool === king.tool)
+                if (king.link.id === acts[i].link.id)
+                    acts[i].active = false;    
+}
+
 /*	/////    WINDOW TO CANVAS	///// */
 wtc = function(canvas, x, y) {
 	var bbox = canvas.getBoundingClientRect();
@@ -67,15 +103,17 @@ wtc = function(canvas, x, y) {
 
 /*  ////////////////////   EVENTS   ///////////////////////// */
 /*  ///     TOOL buttons    /// */
+    
+    
 tools.on('click',function(){
     tool = $(this).attr('id');
     tools.removeClass("active-tool");
     $(this).addClass("active-tool");
     if (tool === 'save'){
-        $.post("save.php", {
+        $.post("html/save.php", {
             data: canvas.toDataURL("image/png")
         }, function (file) {
-            window.location.href =  "download.php?path=" + file
+            window.location.href =  "html/download.php?path=" + file
         });
     }
     else if (tool === 'text')
@@ -97,8 +135,8 @@ undo.on('click', function(e){
     /*  code before   */
     if (undoIndex > 0){
         --undoIndex;
-        //acts[undoIndex].active = true;
         redo.removeClass('disabled');
+        acts[undoIndex].active = true;
     } 
     if (undoIndex === 0)
         $(this).addClass('disabled');
@@ -110,7 +148,6 @@ undo.on('click', function(e){
 redo.on('click', function(e){
     
     if (undoIndex < acts.length-1){
-        //acts[undoIndex].active = false;
         undoIndex++;
         undo.removeClass('disabled');
     }
@@ -120,6 +157,20 @@ redo.on('click', function(e){
     acts[undoIndex].active = true;
     
     reRender();
+});    
+
+var pHolder = $('#divPickerHolder'),
+    pGreyIsh = $('#greyIsh'),
+    doc = $(document);
+$('#color').on('click', function(){
+    pGreyIsh.height(doc.height());
+    pGreyIsh.css('display', 'block');
+    pHolder.css('display', 'block');
+});
+    
+$('#btnCancel').on('click', function(){
+    pGreyIsh.css('display', 'none');
+    pHolder.css('display', 'none');
 });    
     
 /*  COLOR CHANGE  */
@@ -169,7 +220,7 @@ function downEvents(){
             for(var i=acts.length-1; i>=0; i--){
                 if (i && inObject(loc0, acts[i])){
                     undoIndex++;
-                    modLink = acts[undoIndex] = Object.create(Act).params(false, tool, acts[i], acts[i].x, acts[i].y);
+                    modLink = acts[undoIndex] = Object.create(Act).params(false, tool, acts[i]);
                     break; 
                 }
                 if (!i){
@@ -191,6 +242,7 @@ function downEvents(){
                 if (inObject(loc0, acts[i])){
                     undoIndex++;
                     acts[undoIndex] = Object.create(Act).params(false, tool, acts[i], acts[i].color, color);
+                    modsKing(acts[undoIndex]);                    
                     break; 
                 }
             }
@@ -291,6 +343,8 @@ canvas.ontouchend = function(e) {
 
 function upEvents(){
     draw = false;
+    if (tool === 'hand')
+        modsKing(modLink); 
     if (undoIndex > 0)
         undo.removeClass('disabled');
     loc = {};

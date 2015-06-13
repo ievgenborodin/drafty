@@ -1,4 +1,5 @@
 var acts = [],
+    idCount = 0,
     
     Dot = function (x, y) {
         this.x = x;
@@ -10,6 +11,7 @@ var acts = [],
         this.figure = arguments[0];
         this.active = true;
         if (this.figure){
+            this.id = idCount++;
             this.tool = arguments[1];
             this.color = arguments[2];
             this.size = parseInt(arguments[3]);
@@ -46,13 +48,15 @@ var acts = [],
             switch (this.mod) {
                 case 'bucket':
                     this.exColor = arguments[3];
+                    this.exFill = arguments[2].fill;
                     this.color = arguments[4];
+                    this.fill = true;
                     break;
                 case 'hand':
-                    this.exX = arguments[3] || 0;
-                    this.exY = arguments[4] || 0;
-                    this.x = arguments[5] || 0;
-                    this.y = arguments[6] || 0;
+                    this.exX = arguments[2].x;
+                    this.exY = arguments[2].y;
+                    this.x = arguments[3] || 0;
+                    this.y = arguments[4] || 0;
                     break;
             }
         }
@@ -105,14 +109,12 @@ var acts = [],
                 case 'bucket':
                     if (this.active){
                         this.link.color = this.color;
-                        this.link.fill = true;
+                        this.link.fill = this.fill;
                     }
-                    else if (!this.active && this.link.tool !== 'background'){
+                    else {
                         this.link.color = this.exColor;
-                        this.link.fill = false;
+                        this.link.fill = this.exFill;
                     }
-                    else
-                        this.link.color = this.exColor;
                     this.link.draw(canvas, context);
                     break;
                 case 'hand':
@@ -125,6 +127,7 @@ var acts = [],
                         this.link.y = this.exY;
                     }
                     break;
+                    this.link.draw(canvas, context);
             }
         }
     }
