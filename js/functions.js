@@ -1,7 +1,7 @@
 $(function(){
 /*  ////    VARIABLES   //// */
-var canvas = document.getElementById('canvas'),
-    context = canvas.getContext('2d'),
+var canvas = $('#canvas'),
+    context = canvas[0].getContext('2d'),
     undo = $('#undo').addClass('disabled'),        
     redo = $('#redo').addClass('disabled'),
     tools = $('.tool-cols > div'),
@@ -10,29 +10,45 @@ var canvas = document.getElementById('canvas'),
     lenx=0,leny=0, x0=0, y0=0,
     radius1=0, radius2=0, radius=0, 
     tool = '',
-    draw = false, color = 'black', size=1, loc, loc0,
+    draw = false, color = '#f00', size=1, loc, loc0,
     inputText='',
-    modLink=0, textFont;
+    modLink=0, textFont,
+    imageSV = $('#pickerBG'), 
+    cursorSV = $('#pointerBG'), 
+    imageH = $('#pickerColor'),
+    cursorH = $('#pointerColor'), 
+    imageSVwidth = imageSV.width(),
+    imageSVheight = imageSV.height(),
+    imageHheight = imageH.height(),
+    colorSpot = $('.colorSpot'), 
+    colorHash = $('#colorHash'),
+    result = imageSV.css('background-color'),
+    locHue = {x: 0, y: 0}, 
+    locSaVa ={x: imageSVwidth, y: 0}, 
+    h = 359, s = 100, v =100, r=255, g=0, b=0, hex= 0xff0000,
+    editRight = $('#edit-right'),
+    editLeft = $('#edit-left'),
+    header = $('#header');
+    window.mousedown = 0;
     
 
 /*	SCREEN STATE	*/
 function screenState(){
 	width = window.innerWidth;
 	height = window.innerHeight;
-	landscape = width-height>0 ? true : false;
-	if (landscape)
-		scrX = scrY = (width > 1300) ? height * 0.7 : height;
-	else 
-		scrY = scrX = width;
-    if (scrX < 500){
-        $('#Live').html("L");
-        $('#Brush').html("B");
-    }
-//	canvas.width = (scrX<400) ? scrX : scrX * 0.6;
-//	canvas.height = (scrY<400) ? scrY : scrY * 0.6;
+    if (width<768)
+        editRight.innerHeight(height - header.innerHeight() - editLeft.innerHeight() + 'px');
+    else if (width >= 768 && width < 1300)
+        editRight.innerHeight(height - header.innerHeight() + 'px');
+    else 
+        editRight.innerHeight(editLeft.innerHeight() + 'px');
+    canvas.attr('width', editRight.width()-2 + 'px').attr('height', editRight.height()-6 + 'px');
+    imageSVwidth = imageSV.width();
+    imageSVheight = imageSV.height();
+    imageHheight = imageH.height();
 }    
-    
-  screenState();  
+screenState();  
+
 /* ///   Collisions     ////  */
 inObject = function(cur, obj) {
     var collide = false;
@@ -72,16 +88,16 @@ reRender = function() {
     for (var i=acts.length-1; i>0; i--)
         if(!acts[i].figure && !acts[i].active && acts[i].link !== undefined)
             if (acts[i].link.active)
-                acts[i].draw(canvas, context);
+                acts[i].draw(context);
     /* active mods */
     for (var i=1; i<acts.length; i++)
         if(!acts[i].figure && acts[i].active && acts[i].link !== undefined)
             if (acts[i].link.active)
-                acts[i].draw(canvas, context);
+                acts[i].draw(context);
     /* figures */
     for (var i=0; i<acts.length; i++)
         if(acts[i].figure && acts[i].active)
-            acts[i].draw(canvas, context);
+            acts[i].draw(context);
 }
   
 /* ////     MODS kings function  //// */
@@ -101,9 +117,104 @@ wtc = function(canvas, x, y) {
 	};
 };
 
+    
+outData = function(H, S, V, R, G, B, Hex){
+	h = H;   s = S;   v = V; 
+    r = R;   g = G;   b = B; 
+    hex = Hex;  
+    switch (arguments.length){
+        case 9:
+            locSaVa.y = arguments[7];
+            locSaVa.x = arguments[8];
+            break;
+        case 8:
+            locHue.y = arguments[7];
+            imageSV.css('background-color', '#'+hsv2rgb(h,100,100).hex);
+            break;
+        case 10:
+            locHue.y = arguments[7];
+            locSaVa.y = arguments[8];
+            locSaVa.x = arguments[9];
+    		imageSV.css('background-color', '#'+hsv2rgb(h,100,100).hex);
+            break;
+    }
+	colorHash.val(hex);
+    colorSpot.css('background-color', '#'+hex);
+    cursorH.css({top: locHue.y+'px'});
+    cursorSV.css('top', locSaVa.y + 'px').css('left', locSaVa.x + 'px');  
+    color = "#"+hex;
+};    
+    
+/* ///   HSV - TO - RGB      //// */
+hsv2rgb = function(h, s, v){
+    var H, X, C, r=0, g=0, b=0, m, hex;
+	C = v / 100 * s / 100;
+	m = (v / 100) - C;
+    H = h / 60;
+	X = C * (1 - Math.abs(H % 2 - 1));
+	if (H >= 0 && H < 1){
+        r = C;	g = X;
+	} else if (H >= 1 && H < 2) {
+        r = X;	g = C;
+    } else if (H >= 2 && H < 3) {
+        g = C;	b = X;
+	} else if (H >= 3 && H < 4) {
+		g = X;  b = C;
+	} else if (H >= 4 && H < 5) {
+        r = X;	b = C;
+	} else {
+		r = C;	b = X;
+	}
+    r = Math.floor((r + m) * 255); 
+	g = Math.floor((g + m) * 255);
+    b = Math.floor((b + m) * 255);
+    hex = (r * 65536 + g * 256 + b).toString(16,6);
+    if(hex.length < 6)
+	   for(var i=0, l=6-hex.length; i<l; i++)
+			hex = '0'+hex;
+	
+    return {
+        r: r,
+		g: g,
+		b: b,
+		hex: hex
+	}
+};
+
+/*  /////     RGB - TO - HSV     /////  */    
+rgb2hvs = function(r, g, b, hex){
+    var h, s, v, m, M, c, hy, sy, vx;
+    r /= 255;
+	g /= 255;
+	b /= 255;
+	M = Math.max(r, g, b);
+	m = Math.min(r, g, b);
+	c = M - m;
+	if (c == 0) h = 0;
+	else if (M == r) 
+        h = (((g - b) / c) % 6) * 60;
+	else if (M == g) 
+        h = ((b - r) / c + 2) * 60;
+	else 
+        h = ((r - g) / c + 4) * 60;
+	if (h < 0) 
+        h += 360;
+	v = M * 100;
+    s = (!M) ? 0 : (c / M * 100);
+    
+    return {
+        h: h.toFixed(0),
+        s: s.toFixed(0),
+        v: v.toFixed(0),
+        hy: imageHheight - Math.floor(imageHheight * h / 360),
+        sy: imageSVheight - Math.floor(imageSVheight * s / 100),
+        vx: Math.floor(imageSVwidth * v / 100)
+    }
+};
+    
 /*  ////////////////////   EVENTS   ///////////////////////// */
 /*  ///     TOOL buttons    /// */
-    
+$(window).resize(screenState);    
     
 tools.on('click',function(){
     tool = $(this).attr('id');
@@ -111,7 +222,7 @@ tools.on('click',function(){
     $(this).addClass("active-tool");
     if (tool === 'save'){
         $.post("html/save.php", {
-            data: canvas.toDataURL("image/png")
+            data: canvas[0].toDataURL("image/png")
         }, function (file) {
             window.location.href =  "html/download.php?path=" + file
         });
@@ -168,15 +279,12 @@ $('#color').on('click', function(){
     pHolder.css('display', 'block');
 });
     
-$('#btnCancel').on('click', function(){
+    
+pHolder.css('display', 'none');    
+$('#btnOk').on('click', function(){
     pGreyIsh.css('display', 'none');
     pHolder.css('display', 'none');
 });    
-    
-/*  COLOR CHANGE  */
-$('#color').change(function(){
-    color = $(this).val();
-});
     
 /*  SIZE CHANGE  */    
 $('#size').change(function(){
@@ -192,23 +300,23 @@ document.onkeypress = function(e){
 }
     
 /*  ////   DOWN     /// */ 
-canvas.ontouchstart = function(e) { 
+canvas.on('touchstart', function(e) { 
  	e.preventDefault(e); 
- 	 loc0 = wtc(canvas,e.touches[0].pageX,e.touches[0].pageY); 
+ 	 loc0 = wtc(canvas[0],e.originalEvent.touches[0].pageX,e.originalEvent.touches[0].pageY); 
  	  
  	downEvents();
- }
- canvas.onmousedown = function(e) { 	
+ });
+ canvas.on('mousedown', function(e) { 	
  	e.preventDefault(e); 
- 	 loc0 = wtc(canvas,e.clientX,e.clientY); 
+ 	 loc0 = wtc(canvas[0],e.clientX,e.clientY); 
  	  
  	 downEvents();
- }
+ });
   
 function downEvents(){
  	if (acts.length === 0){
         /*   BACKGROUND as acts[0]  */      
-        acts[0] = Object.create(Act).params(true, "background", "white", 0, 0, 0, canvas.width, canvas.height, true);
+        acts[0] = Object.create(Act).params(true, "background", "white", 0, 0, 0, canvas[0].width, canvas[0].height, true);
     }
     draw = true;
     redo.addClass('disabled');
@@ -266,18 +374,18 @@ function downEvents(){
     
 
 /*  ////   MOVE     /// */ 
-canvas.ontouchmove = function(e) { 
+canvas.on('touchmove', function(e) { 
  	e.preventDefault(e); 
- 	 loc = wtc(canvas,e.touches[0].pageX,e.touches[0].pageY); 
+ 	 loc = wtc(canvas[0],e.originalEvent.touches[0].pageX,e.originalEvent.touches[0].pageY); 
  	  
  	moveEvents();
- }
- canvas.onmousemove = function(e) { 	
+ });
+ canvas.on('mousemove', function(e) { 	
  	e.preventDefault(e); 
- 	 loc = wtc(canvas,e.x,e.y);
+ 	 loc = wtc(canvas[0],e.clientX,e.clientY);
  	  
  	 moveEvents();
- }
+ });
 
 function moveEvents(){
     if (draw){
@@ -311,6 +419,8 @@ function moveEvents(){
                 acts[acts.length-1].y = y0 = (leny >=0) ? loc0.y : loc0.y + leny;
                 acts[acts.length-1].xn = lenx=Math.abs(lenx);
                 acts[acts.length-1].yn = leny=Math.abs(leny);    
+                context.fillRect(loc0.x, loc0.y, lenx, leny);
+                console.log(loc0.x +' '+ loc0.y +' '+ loc.x +' '+ loc.y +' '+ lenx +' '+ leny );
                 reRender();
                 break;
             case 'circle':
@@ -330,16 +440,17 @@ function moveEvents(){
 
     
 /*  ////   UP     /// */ 
-canvas.ontouchend = function(e) { 
+canvas.on('touchend', function(e) { 
  	e.preventDefault(e);
-    
+   
  	upEvents();
- }
- canvas.onmouseup = function(e) { 	
+});
+
+canvas.on('mouseup', function(e) { 	
  	e.preventDefault(e);
-     
+      
  	 upEvents();
- }
+});
 
 function upEvents(){
     draw = false;
@@ -354,5 +465,120 @@ function upEvents(){
     modLink = 0;
 }
 
-$('#canvas').attr('width', $('#edit-right').width() ).attr('height', $('#edit-right').width()/1.25 );    
+/*  /////   DOWN     ////// */ 
+imageH.on('touchstart', function(e) { 
+ 	e.preventDefault(e); 
+    locHue = wtc(imageH[0],e.originalEvent.touches[0].pageX,e.originalEvent.touches[0].pageY); 
+ 	downHue();
+ });
+ imageH.on('mousedown', function(e) { 	
+ 	e.preventDefault(e); 
+ 	locHue = wtc(imageH[0],e.clientX,e.clientY); 
+    downHue();
+ });
+downHue = function(){
+    h = Math.floor((imageHheight - locHue.y) / imageHheight * 360);
+    h = (h < 0) ? 0 : (h>=360) ? 359 : h;
+    temp = hsv2rgb(h,s,v);
+    outData(h, s, v, temp.r, temp.g, temp.b, temp.hex, locHue.y);
+}
+
+imageSV.on('touchstart', function(e) { 
+ 	e.preventDefault(e); 
+    locSaVa = wtc(imageSV[0],e.originalEvent.touches[0].pageX,e.originalEvent.touches[0].pageY); 
+ 	downSaVa();
+ });
+imageSV.on('mousedown', function(e) { 	
+ 	e.preventDefault(e); 
+ 	locSaVa = wtc(imageSV[0],e.clientX,e.clientY); 
+    downSaVa();
+ });
+downSaVa = function(){
+    s = Math.floor((imageSVheight - locSaVa.y) / imageSVheight * 100);
+    v = Math.floor(locSaVa.x / imageSVwidth * 100);
+    s = (s < 0) ? 0 : (s>100) ? 100 : s;
+    v = (v < 0) ? 0 : (v>100) ? 100 : v;
+	temp = hsv2rgb(h, s, v);
+    outData(h, s, v, temp.r, temp.g, temp.b, temp.hex, locSaVa.y, locSaVa.x);
+}
+
+
+
+ /*  ///////   MOVE     /////// */ 
+imageH.on('touchmove', function(e) { 
+ 	e.preventDefault(e); 
+    locHue = wtc(imageH[0],e.originalEvent.touches[0].pageX,e.originalEvent.touches[0].pageY); 
+ 	moveHue();
+ });
+
+$(window).on('mousedown mouseup', function(e) {
+    this.mousedown = (e.type === 'mousedown') ? 1 : 0;
+});    
+    
+imageH.on('mousemove', function(e) { 	
+ 	e.preventDefault(e); 
+    locHue = (window.mousedown) ? wtc(imageH[0],e.clientX,e.clientY) : locHue; 
+    moveHue();
+ });
+    
+moveHue = function(){
+    h = Math.floor((imageHheight - locHue.y) / imageHheight * 360);
+    h = (h < 0) ? 0 : (h>=360) ? 359 : h;
+    temp = hsv2rgb(h,s,v);
+    outData(h, s, v, temp.r, temp.g, temp.b, temp.hex, locHue.y);
+}
+
+imageSV.on('touchmove', function(e) { 
+ 	e.preventDefault(e); 
+    locSaVa = wtc(imageSV[0],e.originalEvent.touches[0].pageX,e.originalEvent.touches[0].pageY); 
+ 	moveSaVa();
+ });
+imageSV.on('mousemove', function(e) { 	
+ 	e.preventDefault(e);
+    locSaVa = (window.mousedown) ? wtc(imageSV[0],e.clientX,e.clientY) : locSaVa;
+    moveSaVa();
+ });
+moveSaVa = function(){
+    s = Math.floor((imageSVheight - locSaVa.y) / imageSVheight * 100);
+    v = Math.floor(locSaVa.x / imageSVwidth * 100);
+    s = (s < 0) ? 0 : (s>100) ? 100 : s;
+    v = (v < 0) ? 0 : (v>100) ? 100 : v;
+	temp = hsv2rgb(h, s, v);
+    outData(h, s, v, temp.r, temp.g, temp.b, temp.hex, locSaVa.y, locSaVa.x);
+} 
+
+/*  ////////   UP     /////// */ 
+imageH.on('touchend', function(e) { 
+ 	e.preventDefault(e);
+ 	tmpLocHue = 0;
+ });
+    
+imageSV.on('touchend', function(e) { 
+ 	e.preventDefault(e);
+ 	tmpLocSaVa = 0;
+ });
+    
+
+    
+/*  COLOR CHANGE  */
+colorHash.blur(function(){
+    var hex = $(this).val(),
+        tmp;
+    switch (hex.length){
+        case 6:
+            r = parseInt(hex.substr(0,2), 16);
+            g = parseInt(hex.substr(2,2), 16);
+            b = parseInt(hex.substr(4,2), 16);
+            tmp = rgb2hvs(r, g, b, hex);
+            outData(tmp.h, tmp.s, tmp.v, r, g, b, hex, tmp.hy, tmp.sy, tmp.vx);
+            break;
+        case 3:
+            r = parseInt(hex.substr(0,1), 16);
+            g = parseInt(hex.substr(1,1), 16);
+            b = parseInt(hex.substr(2,1), 16);
+            tmp = rgb2hvs(r, g, b, hex);
+            outData(tmp.h, tmp.s, tmp.v, r, g, b, hex, tmp.hy, tmp.sy, tmp.vx);
+            break;
+    }
+});
 });

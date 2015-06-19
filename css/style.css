@@ -8,43 +8,88 @@ body{
     font-family: 'Cent';
     position: relative;
 }
-.title{
+.black{
+    color: #333;
+}
+.white{
+    color: #eee;
+}
+.disabled {
+    color: grey;
+}
+.row{
+    height: 100%;
+}
+#header{
+    position: relative;
     background: black;
     color: white;
-    border-radius: 5px;
+    border-radius: 3px;
+    height: 40px;         
 }
-.title h2{
+#word-brush{
+    color: #90ee90;
+}
+#header span{
     font-style: italic;
     float: left;
-}
-.title span{
-    display: inline-block;
+    display: block;
     cursor: pointer;
+}
+#title-img{
+    padding-left: 0.4em;
+}
+#undo-redo{
+    height: 100%;
+}
+#color{
+    height: 100%;
+}
+#color-span{  
+    background-color: #f00;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #777;
+    border-radius: 2px;
+    }
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    overflow: hidden;
+    margin: auto;
+    background: white;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    position: relative;
+    background: #90ee90;
+    z-index: 10;
+    width: 15px;
+    height: 15px;
+}
+input[type="range"]::-webkit-slider-thumb:after {
+    content: " ";
+    position: absolute;
+    background: #90ee90;
+    z-index: 2;
+}
+.tool-cols > div{
+    margin: auto;
+}
+#edit-right{
+    position: relative;
+    padding: 0;
+}
+.active-tool{
+    background-color: #90ee90;
 }
 #canvas{
     cursor: pointer; 
     background: #000; 
-    border: 1px solid #eee; 
+    border: 1px solid #fff; 
     background: white;
     width: 100%;
-}    
-label {
-    margin-left: 1em;
-}
-
-#color{
-    padding: 0;
-    height: 2.5em;
-    border-width: 3px;
-    border-style: solid;
-    border-left-color: black;
-    border-right-color: #90ee90;
-    border-top-color: black;
-    border-bottom-color: #faf;
-    background: black;
-}
-.tpad{
-    padding-top: 0.7em;
 }
 #greyIsh{
     display: none;
@@ -55,111 +100,7 @@ label {
     background: #aaa;
     opacity: 0.5;
 }
-#divPickerHolder{
-    display: none;
-    position: absolute;
-    width: 100%;
-    top: 2em;
-}
-#divPicker{
-    width: 289px;
-    border: 4px solid #333;
-    border-radius: 4px;
-    background: #333;
-    margin: 1em auto;
-    z-index: 100;
-    height: 312px;
-}
-#divPickerBG{
-    height: 256px;
-    margin-right: 5px;
-    float: left;
-}
-#pickerBG{
-    height: 256px;
-    background: red;
-    cursor: pointer;
-}
-#pickerColor{
-    cursor: pointer;
-}
 
-.clear{
-    clear: both;
-}
-
-#divPickerControls{
-    width:285px;
-}
-
-#divPickerControls > .buttons{
-    float: left;
-}
-
-.buttons {
-    padding: 0.5em 1em;
-    margin: auto;
-    color: white;
-}
-
-.buttons > span{
-    display: block;
-}
-
-.btn-default{
-    background: #eee;
-}
-
-#hashColor{
-    color: black;
-    width: 4em;
-}
-.btn-default:hover{
-    background: #90ee90;
-}
-
-input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 15px;
-    overflow: hidden;
-    margin: auto;
-    background: white;
-}
-input[type="range"]::-webkit-slider-thumb {
-    position: relative;
-    background: #90ee90;
-}
-input[type="range"]::-webkit-slider-thumb:after {
-    content: " ";
-    width: 280px;
-    height: 17px;
-    position: absolute;
-    right: 10px;
-    top: 0px;
-    background: #90ee90;
-}
-#edit-left .col-xs-6{
-    padding-right: 0;
-    padding-left: 0.2em; 
-    border-radius: 5px;
-}
-
-.active-tool{
-    background-color: #90ee90;
-}
-#Brush{
-    color: #90ee90;
-}
-.black{
-    color: #333;
-}
-.white{
-    color: #eee;
-}
-.disabled {
-    color: grey;
-}
 
 #message{
     display: none;
@@ -184,68 +125,213 @@ input[type="range"]::-webkit-slider-thumb:after {
     z-index: 10;
 }
 
-.col-sm-1, .col-xs-1{
-    padding-left: 0;
-    padding-right: 0;
-}
-
-.tool-cols{
-    margin: auto;
-}
-
+/*  ////////////    MEDIAS      /////////// */
 @media(min-width: 180px){ 
-    .title{
-        margin-bottom: 0.4em;
+    #undo-redo{
+        padding: 0.5em 0.8em;         
     }
-    .title h2, .title #undo-redo{
-        font-size: 1.3em;
-        margin-top: 0.35em;
+    #undo-redo span{
+        font-size: 1.4em;
+        padding: 0 0.2em;
+    }
+    #header{
+        height: 40px;         
+    }
+    #title{
+        padding: 0.3em 0 0;    
+        font-size: 1.5em;
+    }
+    #color{
+        padding: 0.7em;
+    }
+    #size-div{
+        padding-top: 0.8em;
+    }
+    input[type="range"] {
+        height: 15px;
+        border-radius: 3px;
+    }
+    input[type="range"]::-webkit-slider-thumb:after {
+        width: 280px;
+        height: 20px;
+        right: 10px;
+        top: 0px;
+    }
+    .tool-cols > div{
+        padding: 0.3em 0;
+    }
+    .active-tool{
+        border-radius: 3px;
+    }
+    #edit-left .col-xs-6{
+        padding-right: 0;
+        padding-left: 0.2em; 
+        border-radius: 5px;
     }
 }
 
-@media(min-width: 550px){ 
-    .title{
-        margin-bottom: 0.4em;
+@media(min-width: 400px){ 
+    #undo-redo{
+        padding: 0.5em 1.4em;         
     }
-    .title h2, .title #undo-redo{
-        font-size: 1.5em;
-        margin-top: 0.35em;
+    #size-div{
+        padding-left: 2em;
+    }
+}
+
+@media(min-width: 460px){ 
+    #size-div{
+        padding-left: 3em;
+    }
+}
+
+@media(min-width: 600px){ 
+    #header{
+        height: 50px;         
+    }
+    #title-img{
+        padding-left: 0.4em;
+        zoom: 130%;
+    }
+    #undo-redo{
+        padding: 0.6em 2.2em;
+    }
+    #undo-redo span{
+        font-size: 1.8em;
+        padding: 0 0.4em;
+    }
+    #color{
+        padding: 0.8em 2em;
+    }
+    #size-div{
+        padding-top: 1em;
+        padding-left: 4em;
+    }
+    input[type="range"] {
+        height: 20px;
+        border-radius: 3px;
+    }
+    input[type="range"]::-webkit-slider-thumb:after {
+        width: 280px;
+        height: 20px;
+        right: 10px;
+        top: 0px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        width: 20px;
+        height: 20px;
     }
 }
 
 @media(min-width: 768px){ 
-    .title{
-        margin-bottom: 0.4em;
+    #header{
+        height: 50px;         
     }
-    .title h2, .title #undo-redo{
-        font-size: 1.7em;
-        margin-top: 0.35em;
+    #title{
+        padding: 0.3em 1em;    
+        font-size: 1.8em;
     }
-    
+    #undo-redo{
+        padding: 0.6em 1.4em;
+    }
+    #undo-redo span{
+        font-size: 1.8em;
+        padding: 0 0.2em;
+    }
+    #color{
+        padding: 0.8em 0;
+    }
+    #size-div{
+        padding-top: 1em;
+        padding-left: 4em;
+        padding-right: 0;
+    }
+    input[type="range"] {
+        height: 20px;
+        border-radius: 3px;
+    }
+    input[type="range"]::-webkit-slider-thumb:after {
+        width: 280px;
+        height: 20px;
+        right: 10px;
+        top: 0px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        width: 25px;
+        height: 30px;
+    }
+    .tool-cols > div{
+        padding: 0.3em 0;
+    }
+    .active-tool{
+        border-radius: 3px;
+    }
+    #edit-left .col-xs-6{
+        padding-right: 0;
+        padding-left: 0.2em; 
+        border-radius: 5px;
+    }
+    .active-tool{
+        border-radius: 5px;
+    }
 }
 
 @media(min-width: 992px){ 
-    .title{
-        margin-bottom: 0.4em;
+    #header{
+        height: 60px;         
     }
-    .title h2, .title #undo-redo{
-        font-size: 2em;
-        margin-top: 0.35em;
+    #title{
+        padding: 0.3em 1em;    
+        font-size: 2.2em;
+    }
+    #undo-redo{
+        padding: 0.8em 1.4em;
+    }
+    #undo-redo span{
+        font-size: 2.2em;
+        padding: 0 0.2em;
+    }
+    #color{
+        padding: 0.9em 3em;
+        
+    }
+    #size-div{
+        padding-top: 1.2em;
+        padding-left: 4em;
+        padding-right: 2em;
+    }
+    input[type="range"] {
+        height: 25px;
+        border-radius: 3px;
+    }
+    input[type="range"]::-webkit-slider-thumb:after {
+        width: 330px;
+        height: 35px;
+        right: 10px;
+        top: 0px;
+    }
+    .tool-cols > div{
+        padding: 0.3em 0;
+    }
+    .active-tool{
+        border-radius: 3px;
+    }
+    #edit-left .col-xs-6{
+        padding-right: 0;
+        padding-left: 0.2em; 
+        border-radius: 5px;
     }
 }
 
 @media(min-width: 1200px){ 
-    .title{
-        margin-bottom: 0.4em;
+    #color{
+        padding: 0.9em 4em;
     }
-    .title h2, .title #undo-redo{
-        font-size: 2.3em;
-        margin-top: 0.35em;
+    #size-div{
+        padding-left: 7em;
+        padding-right: 2em;
     }
-    .color{
-        margin-top: 0.8em;
-    }
-    .size{
-        margin-top: 1.5em;
+    input[type="range"]::-webkit-slider-thumb:after {
+        width: 350px;
     }
 }

@@ -63,7 +63,7 @@ var acts = [],
         return this;
     },
     
-    draw: function(canvas, context){
+    draw: function(context){
         if (this.figure && this.active){
             context.strokeStyle = this.color;
             context.lineWidth = this.size;
@@ -115,7 +115,7 @@ var acts = [],
                         this.link.color = this.exColor;
                         this.link.fill = this.exFill;
                     }
-                    this.link.draw(canvas, context);
+                    this.link.draw(context);
                     break;
                 case 'hand':
                     if (this.active){
@@ -127,7 +127,7 @@ var acts = [],
                         this.link.y = this.exY;
                     }
                     break;
-                    this.link.draw(canvas, context);
+                    this.link.draw(context);
             }
         }
     }

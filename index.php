@@ -2,25 +2,25 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-xs-12 title">
+        <div id="header" class="col-xs-12">
             <div class="row">
-                <div class="col-xs-2 col-sm-3 col-md-2">
-                    <h2>
-                        <span id="Live">Live</span><span id="Brush">Brush</span>
-                    </h2>
-                </div>
-                <div class="col-xs-3 col-md-2">
-                    <div id="undo-redo">
-                        <span id="undo">&#x021A9;</span>
-                        <span id="redo">&#x021AA;</span>
+                <div id="title" class="col-xs-1 col-sm-3 col-md-3">
+                    <div id="title-text" class="hidden-xs visible-sm visible-md visible-lg">
+                        <span id="word-live">Live</span><span id="word-brush">Brush</span>
+                    </div>
+                    <div id="title-img" class="visible-xs hidden-sm hidden-md hidden-lg">
+                        <img src="img/title.png" class="img-responsive">
                     </div>
                 </div>
-                <div class="col-xs-2 col-md-1 color">
-                    <input type="color" value="#00f;" id="color">
+                <div id="undo-redo" class="col-xs-3 col-sm-2">
+                    <span id="undo">&#x021A9;</span>
+                    <span id="redo">&#x021AA;</span>
+                </div>
+                <div id="color" class="col-xs-2 col-sm-1 col-md-2 color">
+                    <span id="color-span" class="colorSpot"></span>
                 </div> 
-                <div class="col-xs-5 col-sm-4 col-md-3 size tpad">
+                <div id="size-div" class="col-xs-6 col-sm-5 col-md-5 size">
                     <input type="range" id="size" min="1" max="20" step="0.1" value="1"> 
-                    <!--<button id="chk">chk</button> -->
                 </div>
             </div>
         </div>
@@ -40,11 +40,6 @@
           <div id="pencil" class="col-xs-1 col-md-6">
               <img src="img/pencil.png" class="img-responsive" />
           </div>
-          <!--
-          <div id="star" class="col-xs-6">
-              <img src="img/star.png" class="img-responsive" />
-          </div>
-          -->
           <div id="circle" class="col-xs-1 col-md-6">
               <img src="img/circle.png" class="img-responsive" />
           </div>
@@ -60,7 +55,10 @@
           <div id="eraser" class="col-xs-1 col-md-6">
               <img src="img/eraser.png" class="img-responsive" />
           </div>
-          <div id="save" class="col-xs-1 col-xs-offset-1 col-md-6">
+          <div id="star" class="col-xs-1 col-md-6">
+              <img src="img/star.png" class="img-responsive" />
+          </div>
+          <div id="save" class="col-xs-1 col-md-6">
               <img src="img/save.png" class="img-responsive" />
           </div>
           <div id="cleanew" class="col-xs-1 col-md-6">
@@ -68,7 +66,7 @@
           </div>
         </div>
     </div>  
-    <div id="edit-right" class="col-xs-12 col-md-10 edit-right">
+    <div id="edit-right" class="col-xs-12 col-md-10">
         <canvas id="canvas">Doesn't support.</canvas>
         <input type="text" id="tiny-text">
         <div id="message"></div>
@@ -80,11 +78,15 @@
 <div id="greyIsh"></div>
 <div id="divPickerHolder">
     <div id="divPicker">
-        <div id="divPickerBG">
-            <img src="img/picker-bg.png" id="pickerBG" />
-        </div>
-        <div id="divPickerColor">
-            <img src="img/picker-color.png" id="pickerColor" />
+        <div id="pickerWorkingSpace">
+            <div id="divPickerBG">
+                <img src="img/picker-bg.png" id="pickerBG" class="img-responsive" />
+                <span id="pointerBG"></span>
+            </div>
+            <div id="divPickerColor">
+                <img src="img/picker-color.png" id="pickerColor" />
+                <span id="pointerColor"></span>
+            </div>
         </div>
         <div class="clear"></div>
         <div id="divPickerControls">
@@ -92,14 +94,16 @@
                 <span class="btn btn-default" id="btnOk">Ok</span>
             </div>
             <div class="buttons">
-                <span class="btn btn-default" id="btnCancel">Cancel</span>
+                <span id="colorSpot" class="colorSpot"></span>
             </div>
             <div class="buttons">
-                #<input type="text" id="hashColor" />;
+                #<input type="text" id="colorHash" />;
             </div>
+            
         </div>
     </div>
-</div>    
+</div> 
+  
 
 
 
