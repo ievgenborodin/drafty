@@ -10,4 +10,4 @@ Eventually will a hybrid graphical web application, combining raster and object 
 ![Preview screen](/scr.jpg)
 
 ## Link
-http://feverart.com/mybrushphp/
+http://ievgenborodin.com/apps/livebrush
