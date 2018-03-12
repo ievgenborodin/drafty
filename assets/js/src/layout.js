@@ -30,7 +30,6 @@ export function topBar() {
 		<div class="topbar-wrap">
 			<div>
 			
-				<div class="tool-btn" id="config-btn"></div>
 				<div class="tool-btn" id="save-btn"></div>
 
 			</div>

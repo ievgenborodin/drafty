@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-module.exports = __webpack_require__(6);
+module.exports = __webpack_require__(5);
 
 
 /***/ }),
@@ -100,16 +100,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-//import SideBar from './src/SideBar';
-//import TopBar from './src/TopBar';
-//import ConfigLayer from './src/ConfigLayer';
-
 
 var _jquery = __webpack_require__(3);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _layout = __webpack_require__(8);
+var _layout = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -126,22 +122,103 @@ var DrafTouch = function () {
     key: 'render',
     value: function render() {
 
-      //let sideBar = (new SideBar()).render();
-      // 		topBar = (new TopBar()).render(),
-      // 		configLayer = (new ConfigLayer()).render();
-
       // define html 
-      var html = '\n      <div class="draftouch-wrap">\n        <div>\n          <span id="eraser"></span>\n          ' + (0, _layout.topBar)() + ' \n          ' + (0, _layout.sideBar)() + ' \n        </div>\n      </div>\n    ';
+      var html = '\n      <div class="draftouch-wrap">\n        <div>\n          <span id="eraser"></span>\n          \n          ' + (0, _layout.topBar)() + ' \n          \n          ' + (0, _layout.sideBar)() + ' \n        \n          <canvas id="canvas">Canvas is not supported</canvas>\n        </div>\n      </div>\n    ';
 
       this.rootElement.innerHTML = html;
 
-      /*    // attach event listeners
-          $('#convertEURtoUSD').on('click', function() {
-            this.convertEURtoUSD() 
-          });
-          $('#convertUSDtoEUR').on('click', () => { 
-            this.convertUSDtoEUR() 
-          });*/
+      (0, _jquery2.default)(function () {
+
+        var canvas = (0, _jquery2.default)('#canvas'),
+            context = canvas[0].getContext('2d'),
+            draw = false,
+            color = '#f00',
+            size = 1,
+            loc,
+            loc0,
+            Dot = function Dot(x, y) {
+          this.x = x;
+          this.y = y;
+        };
+
+        window.mousedown = 0;
+
+        // set canvas size 
+        canvas.attr('width', window.innerWidth + 'px').attr('height', window.innerHeight + 'px');
+
+        /*  /////    WINDOW TO CANVAS ///// */
+        var wtc = function wtc(canvas, x, y) {
+          var bbox = canvas.getBoundingClientRect();
+          return { x: x - bbox.left * (canvas.width / bbox.width),
+            y: y - bbox.top * (canvas.height / bbox.height)
+          };
+        };
+
+        /*  ////   DOWN     /// */
+        canvas.on('touchstart', function (e) {
+          e.preventDefault(e);
+          loc0 = wtc(canvas[0], e.originalEvent.touches[0].pageX, e.originalEvent.touches[0].pageY);
+
+          downEvents();
+        });
+        canvas.on('mousedown', function (e) {
+          e.preventDefault(e);
+          loc0 = wtc(canvas[0], e.clientX, e.clientY);
+
+          downEvents();
+        });
+
+        function downEvents() {
+          draw = true;
+          context.strokeStyle = color;
+          context.fillStyle = color;
+
+          context.fillRect(loc0.x - size / 2, loc0.y - size / 2, size, size);
+          //for(var dot in this.dots){
+          //    context.fillRect(dot.x - this.size/2, dot.y - this.size/2, this.size, this.size); 
+          //}
+        }
+
+        /*  ////   MOVE     /// */
+        canvas.on('touchmove', function (e) {
+          e.preventDefault(e);
+          loc = wtc(canvas[0], e.originalEvent.touches[0].pageX, e.originalEvent.touches[0].pageY);
+
+          moveEvents();
+        });
+        canvas.on('mousemove', function (e) {
+          e.preventDefault(e);
+          loc = wtc(canvas[0], e.clientX, e.clientY);
+
+          moveEvents();
+        });
+
+        function moveEvents() {
+          if (draw) {
+            context.fillRect(loc.x - size / 2, loc.y - size / 2, size, size);
+            //acts[acts.length-1].dots.push(new Dot(loc.x, loc.y));
+          }
+        }
+
+        /*  ////   UP     /// */
+        canvas.on('touchend', function (e) {
+          e.preventDefault(e);
+
+          upEvents();
+        });
+
+        canvas.on('mouseup', function (e) {
+          e.preventDefault(e);
+
+          upEvents();
+        });
+
+        function upEvents() {
+          draw = false;
+          loc = {};
+          loc0 = {};
+        }
+      });
     }
   }]);
 
@@ -10522,16 +10599,7 @@ return jQuery;
 
 
 /***/ }),
-/* 4 */,
-/* 5 */,
-/* 6 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 7 */,
-/* 8 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10547,8 +10615,14 @@ function sideBar() {
 }
 
 function topBar() {
-	return "\n\t\t<div class=\"topbar-wrap\">\n\t\t\t<div>\n\t\t\t\n\t\t\t\t<div class=\"tool-btn\" id=\"config-btn\"></div>\n\t\t\t\t<div class=\"tool-btn\" id=\"save-btn\"></div>\n\n\t\t\t</div>\n\t\t</div>\n\t";
+	return "\n\t\t<div class=\"topbar-wrap\">\n\t\t\t<div>\n\t\t\t\n\t\t\t\t<div class=\"tool-btn\" id=\"save-btn\"></div>\n\n\t\t\t</div>\n\t\t</div>\n\t";
 }
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);
