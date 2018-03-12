@@ -1,0 +1,104 @@
+body, html {
+  margin: 0; }
+
+.draftouch-wrap {
+  position: relative;
+  height: 100vh;
+  width: 100%; }
+  .draftouch-wrap > div {
+    position: relative;
+    width: 100%;
+    height: 100%; }
+
+.sidebar-wrap {
+  height: 100%;
+  width: 52px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer; }
+  .sidebar-wrap > div {
+    position: relative;
+    height: calc(100% - 2px);
+    width: calc(100% - 2px);
+    box-shadow: 3px 0 rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 3px 0 rgba(0, 0, 0, 0.6);
+    -webkit-box-shadow: 3px 0 rgba(0, 0, 0, 0.6);
+    -o-box-shadow: 3px 0 rgba(0, 0, 0, 0.6); }
+  .sidebar-wrap .current-color-wrap {
+    position: relative;
+    width: 100%;
+    height: 50px; }
+    .sidebar-wrap .current-color-wrap > span {
+      display: inline-block;
+      width: calc(100% - 6px);
+      height: calc(100% - 6px);
+      background: #333;
+      border: 3px solid; }
+  .sidebar-wrap .colors-wrap {
+    position: relative;
+    width: 100%;
+    height: calc(70% - 25px); }
+    .sidebar-wrap .colors-wrap > div {
+      width: 100%; }
+      .sidebar-wrap .colors-wrap > div:nth-child(2) {
+        height: 30%;
+        background: linear-gradient(#fff, #000); }
+      .sidebar-wrap .colors-wrap > div:nth-child(1) {
+        height: 70%;
+        background-repeat: no-repeat;
+        background-image: url(/draftouch/img/picker-color.png);
+        background-size: 100% 100%; }
+  .sidebar-wrap .size-wrap {
+    position: relative;
+    width: 100%;
+    height: calc(30% - 25px); }
+    .sidebar-wrap .size-wrap > div {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background-repeat: no-repeat;
+      background-image: url(/draftouch/img/size.png);
+      background-size: 100% 100%; }
+
+#eraser {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  cursor: pointer;
+  line-height: 0;
+  font-size: 0;
+  border-radius: 50%;
+  border: solid 1px #eee;
+  background-color: #eed;
+  box-shadow: 3px 1px rgba(0, 0, 0, 0.6);
+  -moz-box-shadow: 3px 1px rgba(0, 0, 0, 0.6);
+  -webkit-box-shadow: 3px 1px rgba(0, 0, 0, 0.6);
+  -o-box-shadow: 3px 1px rgba(0, 0, 0, 0.6); }
+
+#config-btn {
+  background-image: url(/draftouch/img/save.png); }
+
+#save-btn {
+  background-image: url(/draftouch/img/bucket.png); }
+
+.topbar-wrap {
+  position: relative;
+  width: calc(100% - 120px);
+  padding-right: 50px;
+  padding-left: 70px;
+  height: 52px; }
+  .topbar-wrap > div {
+    width: 100%;
+    height: 100%;
+    position: relative; }
+  .topbar-wrap .tool-btn {
+    float: right;
+    background-size: cover;
+    width: 48px;
+    margin: 2px 5px;
+    height: 100%;
+    background-repeat: no-repeat; }

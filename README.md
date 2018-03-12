@@ -1,8 +1,7 @@
-# Live Brush
+# DrafTouch
 
-Eventually will a hybrid graphical web application, combining raster and object based drawing. 
+Drawing web app oriented on touch screen devices.  
 
-* Supports mouse and touch events.
 * Icons drawn by me! :astonished: :scream: :alien:
 
 ## Interface
@@ -10,4 +9,4 @@ Eventually will a hybrid graphical web application, combining raster and object 
 ![Preview screen](/scr.jpg)
 
 ## Link
-http://ievgenborodin.com/apps/livebrush
+http://draftouch.ievgenborodin.com
