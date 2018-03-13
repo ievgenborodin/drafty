@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import { sideBar, topBar } from './src/layout';
+import { setCanvasSize } from './src/common';
+import { downEvent, moveEvent, upEvent }from './src/events';
 
 class DrafTouch {
   
@@ -28,93 +30,33 @@ class DrafTouch {
     
     $(function(){
 
-      var canvas = $('#canvas'),
-          context = canvas[0].getContext('2d'),
-          draw = false,
-          color = '#f00', size=1, loc, loc0,
+      var sessions = [],
+          canvas = $('#canvas'),
 
-      Dot = function (x, y) {
-        this.x = x;
-        this.y = y;
+      core = {
+        canvas: canvas,
+        context: canvas[0].getContext('2d'),
+        draw: false
+      },
+
+      session = {
+        color: '#f00', 
+        brushSize: 1, 
+        loc0: {},
+        loc: {},  
+        locPrev: {}
       };
 
       window.mousedown = 0;
 
       // set canvas size 
-      canvas.attr('width', window.innerWidth + 'px').attr('height', window.innerHeight + 'px');
+      setCanvasSize(core.canvas);
 
-      /*  /////    WINDOW TO CANVAS ///// */
-      let wtc = function(canvas, x, y) {
-        var bbox = canvas.getBoundingClientRect();
-        return { x: x - bbox.left * (canvas.width / bbox.width),
-            y: y - bbox.top * (canvas.height / bbox.height)
-        };
-      };
+      // set brush events
+      downEvent(core, session);
+      moveEvent(core, session);
+      upEvent(core, session);
 
-      /*  ////   DOWN     /// */ 
-      canvas.on('touchstart', function(e) { 
-        e.preventDefault(e); 
-         loc0 = wtc(canvas[0],e.originalEvent.touches[0].pageX,e.originalEvent.touches[0].pageY); 
-
-        downEvents();
-       });
-       canvas.on('mousedown', function(e) {   
-        e.preventDefault(e); 
-         loc0 = wtc(canvas[0],e.clientX,e.clientY); 
-          
-         downEvents();
-       });
-
-       function downEvents() {
-        draw = true;
-        context.strokeStyle = color;
-        context.fillStyle = color;
-        
-        context.fillRect(loc0.x - size/2, loc0.y - size/2, size, size); 
-        //for(var dot in this.dots){
-        //    context.fillRect(dot.x - this.size/2, dot.y - this.size/2, this.size, this.size); 
-        //}
-       }
-
-       /*  ////   MOVE     /// */ 
-        canvas.on('touchmove', function(e) { 
-          e.preventDefault(e); 
-           loc = wtc(canvas[0],e.originalEvent.touches[0].pageX,e.originalEvent.touches[0].pageY); 
-            
-          moveEvents();
-         });
-         canvas.on('mousemove', function(e) {   
-          e.preventDefault(e); 
-           loc = wtc(canvas[0],e.clientX,e.clientY);
-            
-           moveEvents();
-         });
-
-         function moveEvents(){
-            if (draw){
-              context.fillRect(loc.x - size/2, loc.y - size/2, size, size); 
-                //acts[acts.length-1].dots.push(new Dot(loc.x, loc.y));
-            }  
-        }
-
-        /*  ////   UP     /// */ 
-        canvas.on('touchend', function(e) { 
-          e.preventDefault(e);
-           
-          upEvents();
-        });
-
-        canvas.on('mouseup', function(e) {  
-          e.preventDefault(e);
-              
-           upEvents();
-        });
-
-        function upEvents(){
-            draw = false;
-            loc = {};
-            loc0 = {};
-        }
     });
   }
 }

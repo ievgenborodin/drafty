@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Drawing web app oriented on touchscreen devices",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prod": "NODE_ENV=production webpack"
   },
   "keywords": [],
   "author": "ievgen",

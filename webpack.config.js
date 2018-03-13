@@ -46,6 +46,5 @@ module.exports = {
       },
     ]
   },
-  plugins,
-  watch: true
+  plugins
 };
