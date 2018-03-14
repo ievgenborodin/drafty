@@ -9,13 +9,13 @@ export function sideBar() {
 				</div>
 
 				<div class="colors-wrap">
-					<div></div>
-					<div></div>
+					<div id="color-holder"></div>
+					<div id="blackwhite-holder"></div>
 					<span id="color-pointer"></span>
 				</div>
 
 				<div class="size-wrap">
-					<div></div>
+					<div id="size-holder"></div>
 					<span id="size-pointer"></span>
 				</div>
 

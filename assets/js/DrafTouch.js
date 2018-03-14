@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { sideBar, topBar } from './src/layout';
 import { setCanvasSize } from './src/common';
-import { downEvent, moveEvent, upEvent }from './src/events';
+import { brushEvents, sizeEvents, colorEvents }from './src/events';
 
 class DrafTouch {
   
@@ -36,26 +36,37 @@ class DrafTouch {
       core = {
         canvas: canvas,
         context: canvas[0].getContext('2d'),
-        draw: false
+        bwHolder: $('#blackwhite-holder'),
+        colorHolder: $('#color-holder'),
+        colorPointer: $('#color-pointer'),
+        sizeHolder: $('#size-holder'),
+        sizePointer: $('#size-pointer'),
+        drawing: false,
+        sizing: false,
+        coloring: false
       },
 
       session = {
         color: '#f00', 
-        brushSize: 1, 
-        loc0: {},
-        loc: {},  
-        locPrev: {}
+        brushSize: 5, 
+        loc0: {}, loc: {}, locPrev: {},
+        locSize: {},
+        locColor: {}
       };
+
+      // init size pointer position
+      let bb = core.sizeHolder[0].getBoundingClientRect();
+      core.sizePointer.css({bottom: `${~~(bb.height * session.brushSize / 20)}px`});
 
       window.mousedown = 0;
 
       // set canvas size 
       setCanvasSize(core.canvas);
 
-      // set brush events
-      downEvent(core, session);
-      moveEvent(core, session);
-      upEvent(core, session);
+      // set events
+      brushEvents(core, session);
+      sizeEvents(core, session);
+      colorEvents(core, session);
 
     });
   }

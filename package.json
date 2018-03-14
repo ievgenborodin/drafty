@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Drawing web app oriented on touchscreen devices",
   "scripts": {
-    "prod": "NODE_ENV=production webpack"
+    "prod": "NODE_ENV=production webpack",
+    "dev": "webpack",
+    "watch": "webpack --watch"
   },
   "keywords": [],
   "author": "ievgen",
