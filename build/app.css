@@ -33,10 +33,10 @@ body, html {
     height: 50px; }
     .sidebar-wrap .current-color-wrap > span {
       display: inline-block;
-      width: calc(100% - 6px);
-      height: calc(100% - 6px);
-      background: #333;
-      border: 3px solid; }
+      width: calc(100% - 2px);
+      height: calc(100% - 2px);
+      background: #59ff00;
+      border: 1px solid #fff; }
   .sidebar-wrap .colors-wrap {
     position: relative;
     width: 100%;
@@ -126,3 +126,6 @@ body, html {
     top: -4px;
     content: " ";
     position: absolute; }
+
+#color-pointer {
+  top: 306.364px; }

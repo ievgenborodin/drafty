@@ -8,9 +8,9 @@ export function sideBar() {
 					<span id="current-color"></span>
 				</div>
 
-				<div class="colors-wrap">
-					<div id="color-holder"></div>
-					<div id="blackwhite-holder"></div>
+				<div class="colors-wrap" id="color-holder">
+					<div></div>
+					<div></div>
 					<span id="color-pointer"></span>
 				</div>
 

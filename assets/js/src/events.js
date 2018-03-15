@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { 
   brushDown, brushMove, brushUp, 
   sizeDown, sizeMove, sizeUp, 
-  colorDown, colorMove, colorUp, bwDown, bwMove, bwUp
+  colorDown, colorMove, colorUp
 } from './handlers';
 import { wtc } from './common';
 
@@ -55,7 +55,6 @@ export function sizeEvents(core, session) {
  * 
  */
 export function colorEvents(core, session) {
-  // colors
   //touch
   core.colorHolder.on('touchstart', e => colorDown(e, core, session, false));
   core.colorHolder.on('touchmove', e => colorMove(e, core, session, false));         
@@ -64,14 +63,4 @@ export function colorEvents(core, session) {
   core.colorHolder.on('mousedown', e => colorDown(e, core, session, true));
   core.colorHolder.on('mousemove', e => colorMove(e, core, session, true));
   core.colorHolder.on('mouseup', e => colorUp(e, core, session));
-
-  // black & white
-  //touch
-  core.bwHolder.on('touchstart', e => bwDown(e, core, session, false));
-  core.bwHolder.on('touchmove', e => bwMove(e, core, session, false));         
-  core.bwHolder.on('touchend', e => bwUp(e, core, session));
-  ////mouse
-  core.bwHolder.on('mousedown', e => bwDown(e, core, session, true));
-  core.bwHolder.on('mousemove', e => bwMove(e, core, session, true));
-  core.bwHolder.on('mouseup', e => bwUp(e, core, session));
 }

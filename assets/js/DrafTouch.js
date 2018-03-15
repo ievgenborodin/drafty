@@ -36,7 +36,7 @@ class DrafTouch {
       core = {
         canvas: canvas,
         context: canvas[0].getContext('2d'),
-        bwHolder: $('#blackwhite-holder'),
+        currentColor: $('#current-color'),
         colorHolder: $('#color-holder'),
         colorPointer: $('#color-pointer'),
         sizeHolder: $('#size-holder'),
@@ -47,11 +47,10 @@ class DrafTouch {
       },
 
       session = {
-        color: '#f00', 
+        color: '#59ff00', 
         brushSize: 5, 
         loc0: {}, loc: {}, locPrev: {},
-        locSize: {},
-        locColor: {}
+        locSize: {}
       };
 
       // init size pointer position
