@@ -4,8 +4,10 @@
  * Set Canvas Size
  * 
  */
-export function setCanvasSize(canvas) {
-	canvas.attr('width', window.innerWidth-50 + 'px').attr('height', window.innerHeight + 'px');
+export function setCanvasSize(core) {
+	let data = core.context.getImageData(0,0, canvas.width, canvas.height);
+	core.canvas.attr('width', window.innerWidth-50 + 'px').attr('height', window.innerHeight + 'px');
+	core.context.putImageData(data, 0, 0);
 }
 
 
@@ -29,12 +31,24 @@ export function getLoc(e, isMouse){
 export function getCanvasLoc(e, canvas, isMouse) {
 	e.preventDefault(e); 
 
-    let loc = getLoc(e, isMouse),
-    	bbox = canvas.getBoundingClientRect();
+	let loc, 
+		bbox = canvas.getBoundingClientRect();
+	
+	if (isMouse) 
+		return [{ 
+			x: e.clientX - bbox.left * (canvas.width / bbox.width),
+  		    y: e.clientY - bbox.top * (canvas.height / bbox.height) 
+  		}];
 
-  	return { x: loc.x - bbox.left * (canvas.width / bbox.width),
-  	    y: loc.y - bbox.top * (canvas.height / bbox.height)
-  	};
+	else {
+		let touches = e.originalEvent.touches,
+			arr = [];
+		for (var i=0; i<touches.length; i++) 
+			if (touches[i].target.id == 'canvas')
+				arr.push({ x: touches[i].pageX, y: touches[i].pageY });
+
+		return arr; 
+	}
 }
 
 

@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { sideBar, topBar } from './src/layout';
 import { setCanvasSize } from './src/common';
-import { brushEvents, sizeEvents, colorEvents }from './src/events';
+import { brushEvents, sizeEvents, colorEvents, eraserEvents }from './src/events';
 
 class DrafTouch {
   
@@ -36,17 +36,23 @@ class DrafTouch {
       core = {
         canvas: canvas,
         context: canvas[0].getContext('2d'),
+        eraser: $('#eraser'),
         currentColor: $('#current-color'),
         colorHolder: $('#color-holder'),
         colorPointer: $('#color-pointer'),
         sizeHolder: $('#size-holder'),
         sizePointer: $('#size-pointer'),
+        saveBtn: $('#save-btn'),
         drawing: false,
         sizing: false,
-        coloring: false
+        coloring: false,
+        erasing: false,
+        pages: [],
+        currentPage: 0
       },
 
       session = {
+        tempColor: '',
         color: '#59ff00', 
         brushSize: 5, 
         loc0: {}, loc: {}, locPrev: {},
@@ -60,13 +66,22 @@ class DrafTouch {
       window.mousedown = 0;
 
       // set canvas size 
-      setCanvasSize(core.canvas);
+      setCanvasSize(core);
+      $(window).resize(e => { setCanvasSize(core) }); 
 
       // set events
       brushEvents(core, session);
       sizeEvents(core, session);
       colorEvents(core, session);
+      eraserEvents(core, session);
 
+      core.saveBtn.on('click', e => {
+        $.post("/draftouch/etc/save.php", {
+            data: core.canvas[0].toDataURL("image/png")
+        }, function (file) {
+            window.location.href =  "/draftouch/etc/download.php?path=" + file
+        });
+      });
     });
   }
 }

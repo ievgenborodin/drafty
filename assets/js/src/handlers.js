@@ -8,47 +8,95 @@ import { getLoc, getCanvasLoc, scaleValue, hsv2rgb } from './common';
 
 // down
 export function brushDown(e, core, session, isMouse) {
-	session.loc0 = getCanvasLoc(e, core.canvas[0], isMouse); 
+	e.preventDefault();
+	e.stopPropagation();
 
-	core.drawing = true;
-	core.context.strokeStyle = session.color;
-	core.context.fillStyle = session.color;
-	core.context.lineWidth = session.brushSize;
-        
-	session.locPrev = Object.assign({}, session.loc0);
+	session.loc0 = getCanvasLoc(e, core.canvas[0], isMouse);
 
-	core.context.fillRect(session.loc0.x - session.brushSize/2, session.loc0.y - session.brushSize/2, session.brushSize, session.brushSize); 
+	if (session.loc0.length == 2) {
+		core.paging = true;
+		core.drawing = false;
+	}
+	else {
+		let color = core.erasing ? "#fff" : session.color;
+		core.drawing = true;
+		core.context.strokeStyle = color;
+		core.context.fillStyle = color;
+		core.context.lineWidth = core.erasing ? 20 : session.brushSize;
+		        
+		session.locPrev = Object.assign({}, session.loc0[0]);
+
+		core.context.fillRect(session.loc0[0].x - session.brushSize/2, session.loc0[0].y - session.brushSize/2, session.brushSize, session.brushSize);
+	} 
 }
 
 // move
 export function brushMove(e, core, session, isMouse) {
+	e.preventDefault();
+	e.stopPropagation();
+
 	session.loc = getCanvasLoc(e, core.canvas[0], isMouse);
 	
-	if (core.drawing){
+	if (session.loc.length == 2) {
+		// add animation
+	} else {
+		core.paging = false;
 
-		core.context.beginPath();
-		core.context.moveTo(session.locPrev.x, session.locPrev.y);
-		core.context.lineTo(session.loc.x, session.loc.y);
-		core.context.stroke();
-		
-		session.locPrev = Object.assign({}, session.loc);
-	}  
+		if (core.drawing) {
+			core.context.beginPath();
+			core.context.moveTo(session.locPrev.x, session.locPrev.y);
+			core.context.lineTo(session.loc[0].x, session.loc[0].y);
+			core.context.stroke();
+				
+			session.locPrev = Object.assign({}, session.loc[0]);
+		}  		
+	}
 }
 
 // up
-export function brushUp(e, core, session) {         
-	e.preventDefault(e);
+export function brushUp(e, core, session, isMouse) {         
+	e.preventDefault();
+	e.stopPropagation();
 
-	if (session.loc.x != session.locPrev.x || session.loc.y != session.locPrev.y) {
-		core.context.beginPath();
-		core.context.moveTo(session.locPrev.x, session.locPrev.y);
-		core.context.lineTo(session.loc.x, session.loc.y);
-		core.context.stroke(); 
-	}
-	core.drawing = false;
-	session.loc = {};
+	if (session.loc.length == 2) {
+		let diff1 = session.loc[0].x - session.loc0[0].x;
+		let diff2 = session.loc[1].x - session.loc0[1].x;
+			
+		let canvas = core.canvas[0];
+		
+		if (diff1 > 100 && diff2 > 100) {// left
+			if (core.currentPage == 0) alert('On first page'); // [NEED] add as a flash message
+			else {
+				// save current 
+				core.pages[core.currentPage] = core.context.getImageData(0,0, canvas.width, canvas.height);
+
+				core.currentPage--;
+				
+				// clear screen
+				core.context.clearRect(0,0, canvas.width, canvas.height);
+				// restore
+				core.context.putImageData(core.pages[core.currentPage], 0, 0);
+			}
+		}
+		else if (diff1 < -100 && diff2 < -100) {// right
+			// save current 
+			core.pages[core.currentPage] = core.context.getImageData(0,0, canvas.width, canvas.height);
+			
+			core.currentPage++;
+			
+			// clear screen
+			core.context.clearRect(0,0, canvas.width, canvas.height);
+
+			// restore if exists
+			if (core.pages[core.currentPage])
+				core.context.putImageData(core.pages[core.currentPage], 0, 0);
+		}
+	} 
+
 	session.loc0 = {};
-	session.locPrev = {};
+	session.loc = {};
+	core.paging = false;	
+	core.drawing = false;		
 }
 
 
@@ -80,7 +128,7 @@ export function sizeMove(e, core, session, isMouse) {
 }
 // up
 export function sizeUp(e, core, session) {
-	e.preventDefault(e);
+	e.preventDefault();
 	session.locSize = {};
 	core.sizing = false;
 }
@@ -135,6 +183,29 @@ export function colorMove(e, core, session, isMouse) {
 }
 // up
 export function colorUp(e, core, session) {
-	e.preventDefault(e);
+	e.preventDefault();
 	core.coloring = false;
+}
+
+
+/**
+ * Eraser control
+ * 
+ */
+
+// down/move
+export function eraserDown(e, core, session, isMouse) {
+	e.preventDefault();
+	e.stopPropagation();
+
+	core.erasing = true;
+	core.eraser.addClass('active');
+}
+// up
+export function eraserUp(e, core, session) {
+	e.preventDefault();
+	e.stopPropagation();
+
+	core.erasing = false;
+	core.eraser.removeClass('active');
 }
