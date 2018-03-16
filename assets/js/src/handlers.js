@@ -1,4 +1,5 @@
 import { getLoc, getCanvasLoc, scaleValue, hsv2rgb } from './common';
+import $ from 'jquery';
 
 
 /**
@@ -24,7 +25,7 @@ export function brushDown(e, ui, settings, isMouse) {
 		ui.context.fillStyle = color;
 		ui.context.lineWidth = settings.erasing ? 20 : settings.brushSize;
 		        
-		settings.locPrev = Object.assign({}, settings.loc0[0]);
+		settings.locPrev = $.extend({}, settings.loc0[0]);
 
 		ui.context.fillRect(settings.loc0[0].x - settings.brushSize/2, settings.loc0[0].y - settings.brushSize/2, settings.brushSize, settings.brushSize);
 	} 
@@ -48,7 +49,7 @@ export function brushMove(e, ui, settings, isMouse) {
 			ui.context.lineTo(settings.loc[0].x, settings.loc[0].y);
 			ui.context.stroke();
 				
-			settings.locPrev = Object.assign({}, settings.loc[0]);
+			settings.locPrev = $.extend({}, settings.loc[0]);
 		}  		
 	}
 }

@@ -1,12 +1,14 @@
-# DrafTouch
+# drafty
 
 Drawing web app oriented on touch screen devices.  
 
-* Icons drawn by me! :astonished: :scream: :alien:
-
 ## Interface
+ - Eraser (hold when needed)
+ - Save button (to generate image of current page)
+ - Right panel (Current color, Color panel, Greyscale, Brush size)
+ - Pagination (Swipe with two fingers)
 
 ![Preview screen](/scr.jpg)
 
 ## Link
-http://draftouch.ievgenborodin.com
+http://drafty.xyz

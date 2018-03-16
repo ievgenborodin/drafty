@@ -54,7 +54,7 @@ body, html { margin: 0; font-size: 0; line-height: 0; }
 
 .topbar-wrap { position: absolute; right: 58px; height: 52px; float: right; 
 	&>div { height: 100%; position: relative; }
-	.tool-btn { float: right; background-size: 100%; width: 48px; margin: 2px 2% 0 0; height: 100%; 
+	.tool-btn { float: right; background-size: 100%; width: 48px; margin: 5px 2% 0 0; height: 100%; 
 				background-repeat: no-repeat; cursor: pointer; }
 }
 
