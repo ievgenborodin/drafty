@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { sideBar, topBar } from './src/layout';
-import { setCanvasSize } from './src/common';
+import { setCanvasSize, clrscr } from './src/common';
 import { brushEvents, sizeEvents, colorEvents, eraserEvents }from './src/events';
 
 
@@ -76,6 +76,9 @@ class DrafTouch {
       sizeEvents(ui, settings);
       colorEvents(ui, settings);
       eraserEvents(ui, settings);
+
+      // add white background
+      clrscr(ui, settings);
 
       // save button
       ui.saveBtn.on('click', e => {

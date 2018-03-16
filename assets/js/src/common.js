@@ -97,3 +97,14 @@ export function hsv2rgb(h, s, v) {
 		hex: hex
 	}
 };
+
+
+/**
+ * Clear screen
+ * 
+ */
+export function clrscr(ui, settings) {
+	ui.context.fillStyle = "#fff";
+	ui.context.fillRect(0,0, ui.canvas[0].width, ui.canvas[0].height);
+	ui.context.fillStyle = settings.color;
+}

@@ -1,4 +1,4 @@
-import { getLoc, getCanvasLoc, scaleValue, hsv2rgb } from './common';
+import { getLoc, getCanvasLoc, scaleValue, hsv2rgb, clrscr } from './common';
 import $ from 'jquery';
 
 
@@ -74,7 +74,8 @@ export function brushUp(e, ui, settings, isMouse) {
 				settings.currentPage--;
 				
 				// clear screen
-				ui.context.clearRect(0,0, canvas.width, canvas.height);
+				clrscr(ui, settings);
+
 				// restore
 				ui.context.putImageData(settings.pages[settings.currentPage], 0, 0);
 			}
@@ -86,7 +87,7 @@ export function brushUp(e, ui, settings, isMouse) {
 			settings.currentPage++;
 			
 			// clear screen
-			ui.context.clearRect(0,0, canvas.width, canvas.height);
+			clrscr(ui, settings);
 
 			// restore if exists
 			if (settings.pages[settings.currentPage])
