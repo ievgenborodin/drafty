@@ -1,5 +1,5 @@
 {
-  "name": "DrafTouch",
+  "name": "drafty",
   "version": "1.0.0",
   "description": "Drawing web app oriented on touchscreen devices",
   "scripts": {

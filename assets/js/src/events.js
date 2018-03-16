@@ -1,12 +1,6 @@
 import $ from 'jquery';
-import { 
-  brushDown, brushMove, brushUp, 
-  sizeDown, sizeMove, sizeUp, 
-  colorDown, colorMove, colorUp,
-  eraserDown, eraserUp  
-} from './handlers';
-import { wtc } from './common';
-
+import { brushDown, brushMove, brushUp, sizeDown, sizeMove, sizeUp,  
+         colorDown, colorMove, colorUp, eraserDown, eraserUp } from './handlers';
 
 /**
  * Window
@@ -22,15 +16,15 @@ $(window).on('mousedown mouseup', function(e) {
  * Brush 
  * 
  */
-export function brushEvents(core, session) {
+export function brushEvents(ui, settings) {
   //touch
-  core.canvas.on('touchstart', e => brushDown(e, core, session, false));
-  core.canvas.on('touchmove', e => brushMove(e, core, session, false));         
-  core.canvas.on('touchend', e => brushUp(e, core, session, false));
+  ui.canvas.on('touchstart', e => brushDown(e, ui, settings, false));
+  ui.canvas.on('touchmove', e => brushMove(e, ui, settings, false));         
+  ui.canvas.on('touchend', e => brushUp(e, ui, settings, false));
   //mouse
-  core.canvas.on('mousedown', e => brushDown(e, core, session, true));
-  core.canvas.on('mousemove', e => brushMove(e, core, session, true));
-  core.canvas.on('mouseup', e => brushUp(e, core, session, true));
+  ui.canvas.on('mousedown', e => brushDown(e, ui, settings, true));
+  ui.canvas.on('mousemove', e => brushMove(e, ui, settings, true));
+  ui.canvas.on('mouseup', e => brushUp(e, ui, settings, true));
 }
 
 
@@ -39,15 +33,15 @@ export function brushEvents(core, session) {
  * Size control
  * 
  */
-export function sizeEvents(core, session) {
+export function sizeEvents(ui, settings) {
   //touch
-  core.sizeHolder.on('touchstart', e => sizeDown(e, core, session, false));
-  core.sizeHolder.on('touchmove', e => sizeMove(e, core, session, false));         
-  core.sizeHolder.on('touchend', e => sizeUp(e, core, session));
+  ui.sizeHolder.on('touchstart', e => sizeDown(e, ui, settings, false));
+  ui.sizeHolder.on('touchmove', e => sizeMove(e, ui, settings, false));         
+  ui.sizeHolder.on('touchend', e => sizeUp(e, ui, settings));
   ////mouse
-  core.sizeHolder.on('mousedown', e => sizeDown(e, core, session, true));
-  core.sizeHolder.on('mousemove', e => sizeMove(e, core, session, true));
-  core.sizeHolder.on('mouseup', e => sizeUp(e, core, session));
+  ui.sizeHolder.on('mousedown', e => sizeDown(e, ui, settings, true));
+  ui.sizeHolder.on('mousemove', e => sizeMove(e, ui, settings, true));
+  ui.sizeHolder.on('mouseup', e => sizeUp(e, ui, settings));
 }
 
 
@@ -55,15 +49,15 @@ export function sizeEvents(core, session) {
  * Color control
  * 
  */
-export function colorEvents(core, session) {
+export function colorEvents(ui, settings) {
   //touch
-  core.colorHolder.on('touchstart', e => colorDown(e, core, session, false));
-  core.colorHolder.on('touchmove', e => colorMove(e, core, session, false));         
-  core.colorHolder.on('touchend', e => colorUp(e, core, session));
+  ui.colorHolder.on('touchstart', e => colorDown(e, ui, settings, false));
+  ui.colorHolder.on('touchmove', e => colorMove(e, ui, settings, false));         
+  ui.colorHolder.on('touchend', e => colorUp(e, ui, settings));
   ////mouse
-  core.colorHolder.on('mousedown', e => colorDown(e, core, session, true));
-  core.colorHolder.on('mousemove', e => colorMove(e, core, session, true));
-  core.colorHolder.on('mouseup', e => colorUp(e, core, session));
+  ui.colorHolder.on('mousedown', e => colorDown(e, ui, settings, true));
+  ui.colorHolder.on('mousemove', e => colorMove(e, ui, settings, true));
+  ui.colorHolder.on('mouseup', e => colorUp(e, ui, settings));
 }
 
 
@@ -71,13 +65,13 @@ export function colorEvents(core, session) {
  * Eraser control 
  * 
  */
-export function eraserEvents(core, session) {
+export function eraserEvents(ui, settings) {
   //touch
-  core.eraser.on('touchstart', e => eraserDown(e, core, session, false));
-  core.eraser.on('touchmove', e => eraserDown(e, core, session, false));         
-  core.eraser.on('touchend', e => eraserUp(e, core, session, false));
+  ui.eraser.on('touchstart', e => eraserDown(e, ui, settings, false));
+  ui.eraser.on('touchmove', e => eraserDown(e, ui, settings, false));         
+  ui.eraser.on('touchend', e => eraserUp(e, ui, settings, false));
   //mouse
-  core.eraser.on('mousedown', e => eraserDown(e, core, session, true));
-  core.eraser.on('mousemove', e => eraserDown(e, core, session, true));
-  core.eraser.on('mouseup', e => eraserUp(e, core, session, true));
+  ui.eraser.on('mousedown', e => eraserDown(e, ui, settings, true));
+  ui.eraser.on('mousemove', e => eraserDown(e, ui, settings, true));
+  ui.eraser.on('mouseup', e => eraserUp(e, ui, settings, true));
 }

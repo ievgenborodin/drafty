@@ -3,6 +3,7 @@ import { sideBar, topBar } from './src/layout';
 import { setCanvasSize } from './src/common';
 import { brushEvents, sizeEvents, colorEvents, eraserEvents }from './src/events';
 
+
 class DrafTouch {
   
   constructor(rootElement) {
@@ -30,10 +31,9 @@ class DrafTouch {
     
     $(function(){
 
-      var sessions = [],
-          canvas = $('#canvas'),
+      var canvas = $('#canvas'),
 
-      core = {
+      ui = {
         canvas: canvas,
         context: canvas[0].getContext('2d'),
         eraser: $('#eraser'),
@@ -42,44 +42,47 @@ class DrafTouch {
         colorPointer: $('#color-pointer'),
         sizeHolder: $('#size-holder'),
         sizePointer: $('#size-pointer'),
-        saveBtn: $('#save-btn'),
-        drawing: false,
-        sizing: false,
-        coloring: false,
-        erasing: false,
-        pages: [],
-        currentPage: 0
+        saveBtn: $('#save-btn')
       },
 
-      session = {
-        tempColor: '',
+      settings = {
+        pages: [],
+        currentPage: 0,
+        
+        coloring: false,
+        erasing: false,
+        sizing: false,
+        drawing: false,
+        
         color: '#59ff00', 
         brushSize: 5, 
-        loc0: {}, loc: {}, locPrev: {},
+        
+        loc0: {}, loc: {}, locPrev: {}, 
         locSize: {}
       };
 
       // init size pointer position
-      let bb = core.sizeHolder[0].getBoundingClientRect();
-      core.sizePointer.css({bottom: `${~~(bb.height * session.brushSize / 20)}px`});
+      let bb = ui.sizeHolder[0].getBoundingClientRect();
+      ui.sizePointer.css({bottom: `${~~(bb.height * settings.brushSize / 20)}px`});
 
       window.mousedown = 0;
 
       // set canvas size 
-      setCanvasSize(core);
-      $(window).resize(e => { setCanvasSize(core) }); 
+      setCanvasSize(ui);
+      $(window).resize(e => { setCanvasSize(ui) }); 
 
       // set events
-      brushEvents(core, session);
-      sizeEvents(core, session);
-      colorEvents(core, session);
-      eraserEvents(core, session);
+      brushEvents(ui, settings);
+      sizeEvents(ui, settings);
+      colorEvents(ui, settings);
+      eraserEvents(ui, settings);
 
-      core.saveBtn.on('click', e => {
-        $.post("/draftouch/etc/save.php", {
-            data: core.canvas[0].toDataURL("image/png")
+      // save button
+      ui.saveBtn.on('click', e => {
+        $.post("etc/save.php", {
+            data: ui.canvas[0].toDataURL("image/png")
         }, function (file) {
-            window.location.href =  "/draftouch/etc/download.php?path=" + file
+            window.location.href =  "etc/download.php?path=" + file
         });
       });
     });

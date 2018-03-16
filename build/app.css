@@ -49,7 +49,7 @@ body, html {
       .sidebar-wrap .colors-wrap > div:nth-child(1) {
         height: 70%;
         background-repeat: no-repeat;
-        background-image: url(/draftouch/img/picker-color.png);
+        background-image: url(/img/picker-color.png);
         background-size: 100% 100%; }
   .sidebar-wrap .size-wrap {
     position: relative;
@@ -60,7 +60,7 @@ body, html {
       height: 100%;
       position: relative;
       background-repeat: no-repeat;
-      background-image: url(/draftouch/img/size.png);
+      background-image: url(/img/size.png);
       background-size: 100% 100%; }
 
 #eraser {
@@ -86,7 +86,7 @@ body, html {
     box-shadow: none !important; }
 
 #save-btn {
-  background-image: url(/draftouch/img/save.png); }
+  background-image: url(/img/save.png); }
 
 .topbar-wrap {
   position: absolute;

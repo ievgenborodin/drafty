@@ -1,13 +1,11 @@
-
-
 /**
  * Set Canvas Size
  * 
  */
-export function setCanvasSize(core) {
-	let data = core.context.getImageData(0,0, canvas.width, canvas.height);
-	core.canvas.attr('width', window.innerWidth-50 + 'px').attr('height', window.innerHeight + 'px');
-	core.context.putImageData(data, 0, 0);
+export function setCanvasSize(ui) {
+	let data = ui.context.getImageData(0,0, canvas.width, canvas.height);
+	ui.canvas.attr('width', window.innerWidth-50 + 'px').attr('height', window.innerHeight + 'px');
+	ui.context.putImageData(data, 0, 0);
 }
 
 

@@ -7,96 +7,96 @@ import { getLoc, getCanvasLoc, scaleValue, hsv2rgb } from './common';
  */
 
 // down
-export function brushDown(e, core, session, isMouse) {
+export function brushDown(e, ui, settings, isMouse) {
 	e.preventDefault();
 	e.stopPropagation();
 
-	session.loc0 = getCanvasLoc(e, core.canvas[0], isMouse);
+	settings.loc0 = getCanvasLoc(e, ui.canvas[0], isMouse);
 
-	if (session.loc0.length == 2) {
-		core.paging = true;
-		core.drawing = false;
+	if (settings.loc0.length == 2) {
+		settings.paging = true;
+		settings.drawing = false;
 	}
 	else {
-		let color = core.erasing ? "#fff" : session.color;
-		core.drawing = true;
-		core.context.strokeStyle = color;
-		core.context.fillStyle = color;
-		core.context.lineWidth = core.erasing ? 20 : session.brushSize;
+		let color = settings.erasing ? "#fff" : settings.color;
+		settings.drawing = true;
+		ui.context.strokeStyle = color;
+		ui.context.fillStyle = color;
+		ui.context.lineWidth = settings.erasing ? 20 : settings.brushSize;
 		        
-		session.locPrev = Object.assign({}, session.loc0[0]);
+		settings.locPrev = Object.assign({}, settings.loc0[0]);
 
-		core.context.fillRect(session.loc0[0].x - session.brushSize/2, session.loc0[0].y - session.brushSize/2, session.brushSize, session.brushSize);
+		ui.context.fillRect(settings.loc0[0].x - settings.brushSize/2, settings.loc0[0].y - settings.brushSize/2, settings.brushSize, settings.brushSize);
 	} 
 }
 
 // move
-export function brushMove(e, core, session, isMouse) {
+export function brushMove(e, ui, settings, isMouse) {
 	e.preventDefault();
 	e.stopPropagation();
 
-	session.loc = getCanvasLoc(e, core.canvas[0], isMouse);
+	settings.loc = getCanvasLoc(e, ui.canvas[0], isMouse);
 	
-	if (session.loc.length == 2) {
+	if (settings.loc.length == 2) {
 		// add animation
 	} else {
-		core.paging = false;
+		settings.paging = false;
 
-		if (core.drawing) {
-			core.context.beginPath();
-			core.context.moveTo(session.locPrev.x, session.locPrev.y);
-			core.context.lineTo(session.loc[0].x, session.loc[0].y);
-			core.context.stroke();
+		if (settings.drawing) {
+			ui.context.beginPath();
+			ui.context.moveTo(settings.locPrev.x, settings.locPrev.y);
+			ui.context.lineTo(settings.loc[0].x, settings.loc[0].y);
+			ui.context.stroke();
 				
-			session.locPrev = Object.assign({}, session.loc[0]);
+			settings.locPrev = Object.assign({}, settings.loc[0]);
 		}  		
 	}
 }
 
 // up
-export function brushUp(e, core, session, isMouse) {         
+export function brushUp(e, ui, settings, isMouse) {         
 	e.preventDefault();
 	e.stopPropagation();
 
-	if (session.loc.length == 2) {
-		let diff1 = session.loc[0].x - session.loc0[0].x;
-		let diff2 = session.loc[1].x - session.loc0[1].x;
+	if (settings.loc.length == 2) {
+		let diff1 = settings.loc[0].x - settings.loc0[0].x;
+		let diff2 = settings.loc[1].x - settings.loc0[1].x;
 			
-		let canvas = core.canvas[0];
+		let canvas = ui.canvas[0];
 		
 		if (diff1 > 100 && diff2 > 100) {// left
-			if (core.currentPage == 0) alert('On first page'); // [NEED] add as a flash message
+			if (settings.currentPage == 0) alert('On first page'); // [NEED] add as a flash message
 			else {
 				// save current 
-				core.pages[core.currentPage] = core.context.getImageData(0,0, canvas.width, canvas.height);
+				settings.pages[settings.currentPage] = ui.context.getImageData(0,0, canvas.width, canvas.height);
 
-				core.currentPage--;
+				settings.currentPage--;
 				
 				// clear screen
-				core.context.clearRect(0,0, canvas.width, canvas.height);
+				ui.context.clearRect(0,0, canvas.width, canvas.height);
 				// restore
-				core.context.putImageData(core.pages[core.currentPage], 0, 0);
+				ui.context.putImageData(settings.pages[settings.currentPage], 0, 0);
 			}
 		}
 		else if (diff1 < -100 && diff2 < -100) {// right
 			// save current 
-			core.pages[core.currentPage] = core.context.getImageData(0,0, canvas.width, canvas.height);
+			settings.pages[settings.currentPage] = ui.context.getImageData(0,0, canvas.width, canvas.height);
 			
-			core.currentPage++;
+			settings.currentPage++;
 			
 			// clear screen
-			core.context.clearRect(0,0, canvas.width, canvas.height);
+			ui.context.clearRect(0,0, canvas.width, canvas.height);
 
 			// restore if exists
-			if (core.pages[core.currentPage])
-				core.context.putImageData(core.pages[core.currentPage], 0, 0);
+			if (settings.pages[settings.currentPage])
+				ui.context.putImageData(settings.pages[settings.currentPage], 0, 0);
 		}
 	} 
 
-	session.loc0 = {};
-	session.loc = {};
-	core.paging = false;	
-	core.drawing = false;		
+	settings.loc0 = {};
+	settings.loc = {};
+	settings.paging = false;	
+	settings.drawing = false;		
 }
 
 
@@ -107,30 +107,30 @@ export function brushUp(e, core, session, isMouse) {
  */
 
 // down
-export function sizeDown(e, core, session, isMouse) {
-	core.sizing = true;
-	sizeMove(e, core, session, isMouse);
+export function sizeDown(e, ui, settings, isMouse) {
+	settings.sizing = true;
+	sizeMove(e, ui, settings, isMouse);
 }
 // move
-export function sizeMove(e, core, session, isMouse) {	
-	if (!core.sizing) 
+export function sizeMove(e, ui, settings, isMouse) {	
+	if (!settings.sizing) 
 		return; 
 
 	let coords = getLoc(e, isMouse),
-		bb = core.sizeHolder[0].getBoundingClientRect(),
+		bb = ui.sizeHolder[0].getBoundingClientRect(),
 		bottom; 
 
-	session.locSize = bb.height - bb.height * (coords.y - bb.top) / bb.height; 
-	bottom = session.locSize<0 ? 1 : session.locSize>bb.height ? bb.height : session.locSize;
-	core.sizePointer.css({bottom: `${bottom}px`})
-	session.brushSize = scaleValue(session.locSize, bb.height, 20);
-	core.context.lineWidth = session.brushSize;
+	settings.locSize = bb.height - bb.height * (coords.y - bb.top) / bb.height; 
+	bottom = settings.locSize<0 ? 1 : settings.locSize>bb.height ? bb.height : settings.locSize;
+	ui.sizePointer.css({bottom: `${bottom}px`})
+	settings.brushSize = scaleValue(settings.locSize, bb.height, 20);
+	ui.context.lineWidth = settings.brushSize;
 }
 // up
-export function sizeUp(e, core, session) {
+export function sizeUp(e, ui, settings) {
 	e.preventDefault();
-	session.locSize = {};
-	core.sizing = false;
+	settings.locSize = {};
+	settings.sizing = false;
 }
 
 
@@ -141,17 +141,17 @@ export function sizeUp(e, core, session) {
  */
 
 // down
-export function colorDown(e, core, session, isMouse) {
-	core.coloring = true;
-	colorMove(e, core, session, isMouse);
+export function colorDown(e, ui, settings, isMouse) {
+	settings.coloring = true;
+	colorMove(e, ui, settings, isMouse);
 }
 // move
-export function colorMove(e, core, session, isMouse) {	
-	if (!core.coloring) 
+export function colorMove(e, ui, settings, isMouse) {	
+	if (!settings.coloring) 
 		return; 
 
 	let coords = getLoc(e, isMouse),
-		bb = core.colorHolder[0].getBoundingClientRect(),
+		bb = ui.colorHolder[0].getBoundingClientRect(),
 		top, bottom, hue, x, newHeight; 
 
 	// black & white
@@ -161,10 +161,10 @@ export function colorMove(e, core, session, isMouse) {
 		bottom = bb.top + bb.height - coords.y; 
 		
 		if (bottom < 0) bottom = 0;
-		core.colorPointer.css({bottom: `${bottom}px`, top: 'initial'})
+		ui.colorPointer.css({bottom: `${bottom}px`, top: 'initial'})
 		x = scaleValue(bottom, newHeight, 255);
 		
-		session.color = `rgb(${x},${x},${x})`; 		
+		settings.color = `rgb(${x},${x},${x})`; 		
 
 	// colored
 	} else {
@@ -173,18 +173,18 @@ export function colorMove(e, core, session, isMouse) {
 		top = coords.y - bb.top; 
 		
 		if (top < 0) top = 0;
-		core.colorPointer.css({top: `${top}px`, bottom: 'initial'})
+		ui.colorPointer.css({top: `${top}px`, bottom: 'initial'})
 		hue = 359 - scaleValue(top, newHeight, 359);
 		hue = (hue < 0) ? 0 : (hue>=360) ? 359 : hue;
 		
-		session.color = '#'+hsv2rgb(hue, 100, 100).hex; 	
+		settings.color = '#'+hsv2rgb(hue, 100, 100).hex; 	
 	}
-	core.currentColor.css({background: session.color});
+	ui.currentColor.css({background: settings.color});
 }
 // up
-export function colorUp(e, core, session) {
+export function colorUp(e, ui, settings) {
 	e.preventDefault();
-	core.coloring = false;
+	settings.coloring = false;
 }
 
 
@@ -194,18 +194,18 @@ export function colorUp(e, core, session) {
  */
 
 // down/move
-export function eraserDown(e, core, session, isMouse) {
+export function eraserDown(e, ui, settings, isMouse) {
 	e.preventDefault();
 	e.stopPropagation();
 
-	core.erasing = true;
-	core.eraser.addClass('active');
+	settings.erasing = true;
+	ui.eraser.addClass('active');
 }
 // up
-export function eraserUp(e, core, session) {
+export function eraserUp(e, ui, settings) {
 	e.preventDefault();
 	e.stopPropagation();
 
-	core.erasing = false;
-	core.eraser.removeClass('active');
+	settings.erasing = false;
+	ui.eraser.removeClass('active');
 }
