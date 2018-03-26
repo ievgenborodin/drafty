@@ -1,7 +1,7 @@
 
 export function sideBar() {
 	return `
-		<div class="sidebar-wrap">
+		<div class="sidebar-wrap" id="sidebar">
 			<div>
 
 				<div class="current-color-wrap">

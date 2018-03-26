@@ -77,6 +77,9 @@ class DrafTouch {
       colorEvents(ui, settings);
       eraserEvents(ui, settings);
 
+      // remove sidebar scroll event
+      $('#sidebar').scroll(e=>{e.preventDefault(); e.stopPropagation(); return false; });
+
       // add white background
       clrscr(ui, settings);
 
