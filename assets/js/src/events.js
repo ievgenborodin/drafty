@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { brushDown, brushMove, brushUp, sizeDown, sizeMove, sizeUp,  
-         colorDown, colorMove, colorUp, eraserDown, eraserUp } from './handlers';
+         colorDown, colorMove, colorUp, eraserDown, eraserUp, clearPage } from './handlers';
 
 /**
  * Window
@@ -74,4 +74,6 @@ export function eraserEvents(ui, settings) {
   ui.eraser.on('mousedown', e => eraserDown(e, ui, settings, true));
   ui.eraser.on('mousemove', e => eraserDown(e, ui, settings, true));
   ui.eraser.on('mouseup', e => eraserUp(e, ui, settings, true));
+  //clear clear
+  ui.newPageBtn.on('click', e=> clearPage(e, ui));
 }

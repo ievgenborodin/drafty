@@ -95,6 +95,9 @@ body, html {
 #save-btn {
   background-image: url(/img/save.png); }
 
+#new-page-btn {
+  background-image: url(/img/new.png); }
+
 .topbar-wrap {
   position: absolute;
   right: 58px;
@@ -102,7 +105,9 @@ body, html {
   float: right; }
   .topbar-wrap > div {
     height: 100%;
-    position: relative; }
+    position: relative;
+    display: flex;
+    flex-direction: row; }
   .topbar-wrap .tool-btn {
     float: right;
     background-size: 100%;

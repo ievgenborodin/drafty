@@ -10632,7 +10632,8 @@ var DrafTouch = function () {
           colorPointer: (0, _jquery2.default)('#color-pointer'),
           sizeHolder: (0, _jquery2.default)('#size-holder'),
           sizePointer: (0, _jquery2.default)('#size-pointer'),
-          saveBtn: (0, _jquery2.default)('#save-btn')
+          saveBtn: (0, _jquery2.default)('#save-btn'),
+          newPageBtn: (0, _jquery2.default)('#new-page-btn')
         },
             settings = {
           pages: [],
@@ -10661,6 +10662,9 @@ var DrafTouch = function () {
         (0, _jquery2.default)(window).resize(function (e) {
           (0, _common.setCanvasSize)(ui);
         });
+        window.onorientationchange = function () {
+          (0, _common.setCanvasSize)(ui);
+        };
 
         // set events
         (0, _events.brushEvents)(ui, settings);
@@ -10710,7 +10714,7 @@ function sideBar() {
 }
 
 function topBar() {
-	return "\n\t\t<div class=\"topbar-wrap\">\n\t\t\t<div>\n\t\t\t\n\t\t\t\t<div class=\"tool-btn\" id=\"save-btn\"></div>\n\n\t\t\t</div>\n\t\t</div>\n\t";
+	return "\n\t\t<div class=\"topbar-wrap\">\n\t\t\t<div>\n\t\t\t\n\t\t\t\t<div class=\"tool-btn\" id=\"new-page-btn\"></div>\n\t\t\t\t<div class=\"tool-btn\" id=\"save-btn\"></div>\n\n\t\t\t</div>\n\t\t</div>\n\t";
 }
 
 /***/ }),
@@ -10850,6 +10854,10 @@ function eraserEvents(ui, settings) {
   ui.eraser.on('mouseup', function (e) {
     return (0, _handlers.eraserUp)(e, ui, settings, true);
   });
+  //clear clear
+  ui.newPageBtn.on('click', function (e) {
+    return (0, _handlers.clearPage)(e, ui);
+  });
 }
 
 /***/ }),
@@ -10873,6 +10881,7 @@ exports.colorMove = colorMove;
 exports.colorUp = colorUp;
 exports.eraserDown = eraserDown;
 exports.eraserUp = eraserUp;
+exports.clearPage = clearPage;
 
 var _common = __webpack_require__(1);
 
@@ -11086,6 +11095,15 @@ function eraserUp(e, ui, settings) {
 
 	settings.erasing = false;
 	ui.eraser.removeClass('active');
+}
+
+// clear page
+function clearPage(e, ui) {
+	e.preventDefault();
+	e.stopPropagation();
+
+	ui.context.fillStyle = '#fff';
+	ui.context.fillRect(0, 0, ui.canvas[0].width, ui.canvas[0].height);
 }
 
 /***/ }),

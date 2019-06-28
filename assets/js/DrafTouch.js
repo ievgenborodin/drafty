@@ -42,7 +42,8 @@ class DrafTouch {
         colorPointer: $('#color-pointer'),
         sizeHolder: $('#size-holder'),
         sizePointer: $('#size-pointer'),
-        saveBtn: $('#save-btn')
+        saveBtn: $('#save-btn'),
+        newPageBtn: $('#new-page-btn')
       },
 
       settings = {
@@ -70,6 +71,9 @@ class DrafTouch {
       // set canvas size 
       setCanvasSize(ui);
       $(window).resize(e => { setCanvasSize(ui) }); 
+      window.onorientationchange = function () {
+        setCanvasSize(ui);
+      }
 
       // set events
       brushEvents(ui, settings);

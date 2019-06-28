@@ -211,3 +211,12 @@ export function eraserUp(e, ui, settings) {
 	settings.erasing = false;
 	ui.eraser.removeClass('active');
 }
+
+// clear page
+export function clearPage(e, ui) {
+	e.preventDefault();
+	e.stopPropagation();
+
+	ui.context.fillStyle = '#fff';
+	ui.context.fillRect(0,0, ui.canvas[0].width, ui.canvas[0].height); 
+}
