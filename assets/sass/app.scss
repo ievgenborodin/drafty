@@ -1,6 +1,8 @@
-body, html { margin: 0; font-size: 0; line-height: 0; position: relative; height: 100%; width: 100%; overflow:hidden; }
+body, html { margin: 0; font-size: 0; line-height: 0; position: relative; height: 100%; width: 100%; overflow:hidden; display: flex; }
 
-.draftouch-wrap { position: relative; height: 100%; max-height: 100%; width: 100%; overflow:hidden; -webkit-overflow-scrolling: touch;
+#root { display: flex; width: 100%; height: 100%; }
+
+.draftouch-wrap { display: flex; position: relative; height: 100%; max-height: 100%; width: 100%; overflow:hidden; -webkit-overflow-scrolling: touch;
 	&>div { position: relative; width: 100%; height: 100%;  }
 	&>span {  }
 }

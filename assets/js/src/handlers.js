@@ -23,7 +23,7 @@ export function brushDown(e, ui, settings, isMouse) {
 		settings.drawing = true;
 		ui.context.strokeStyle = color;
 		ui.context.fillStyle = color;
-		ui.context.lineWidth = settings.erasing ? 20 : settings.brushSize;
+		ui.context.lineWidth = settings.erasing ? 60 : settings.brushSize;
 		        
 		settings.locPrev = $.extend({}, settings.loc0[0]);
 
