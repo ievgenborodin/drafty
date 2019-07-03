@@ -11,4 +11,4 @@ Drawing web app oriented on touch screen devices.
 ![Preview screen](/scr.jpg)
 
 ## Link
-http://drafty.xyz
+http://drafty.ievgenborodin.com/
