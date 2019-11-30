@@ -74,6 +74,7 @@ class DrafTouch {
       window.onorientationchange = function () {
         setCanvasSize(ui);
       }
+      ui.context.lineCap = "round";
 
       // set events
       brushEvents(ui, settings);

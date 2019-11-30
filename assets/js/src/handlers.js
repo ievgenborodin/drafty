@@ -27,7 +27,7 @@ export function brushDown(e, ui, settings, isMouse) {
 		        
 		settings.locPrev = $.extend({}, settings.loc0[0]);
 
-		ui.context.fillRect(settings.loc0[0].x - settings.brushSize/2, settings.loc0[0].y - settings.brushSize/2, settings.brushSize, settings.brushSize);
+		//ui.context.fillRect(settings.loc0[0].x - settings.brushSize/2, settings.loc0[0].y - settings.brushSize/2, settings.brushSize, settings.brushSize);
 	} 
 }
 
@@ -125,7 +125,7 @@ export function sizeMove(e, ui, settings, isMouse) {
 	settings.locSize = bb.height - bb.height * (coords.y - bb.top) / bb.height; 
 	bottom = settings.locSize<0 ? 1 : settings.locSize>bb.height ? bb.height : settings.locSize;
 	ui.sizePointer.css({bottom: `${bottom}px`})
-	settings.brushSize = scaleValue(settings.locSize, bb.height, 20);
+	settings.brushSize = scaleValue(settings.locSize, bb.height, bb.width);
 	ui.context.lineWidth = settings.brushSize;
 }
 // up
