@@ -4,10 +4,6 @@ export function sideBar() {
 		<div class="sidebar-wrap" id="sidebar">
 			<div>
 
-				<div class="current-color-wrap">
-					<span id="current-color"></span>
-				</div>
-
 				<div class="colors-wrap" id="color-holder">
 					<div></div>
 					<div></div>
@@ -33,6 +29,23 @@ export function topBar() {
 				<div class="tool-btn" id="new-page-btn"></div>
 				<div class="tool-btn" id="save-btn"></div>
 
+			</div>
+		</div>
+	`;
+}
+
+
+export function bottomControl() {
+	return `
+		<div id="bottom-control-wrap">
+			<div>
+				<div class="round-button" id="c-red"></div>
+				<div class="round-button" id="c-blue"></div>
+				<div class="round-button" id="c-green"></div>
+
+				<div class="round-button" id="current-color-wrap">
+					<span id="current-color"></span>
+				</div>
 			</div>
 		</div>
 	`;

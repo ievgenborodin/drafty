@@ -7,17 +7,19 @@ body, html { margin: 0; font-size: 0; line-height: 0; position: relative; height
 	&>span {  }
 }
 
-.sidebar-wrap { height: 100%; width: 52px; position: absolute; top: 0; right: 0; cursor: pointer;
-	&>div { position: relative; height: calc(100% - 2px); width: calc(100% - 2px); 		
+
+#sidebar {
+	transition: .5s all;
+}
+
+.sidebar-wrap { height: 100%; width: 50px; position: absolute; top: 0; right: 0; cursor: pointer;
+	&>div { position: relative; height: 100%; width: 100%; 		
 		        box-shadow: 3px 0 rgba(0,0,0,0.6);
 		   -moz-box-shadow: 3px 0 rgba(0,0,0,0.6);
 		-webkit-box-shadow: 3px 0 rgba(0,0,0,0.6);
    		     -o-box-shadow: 3px 0 rgba(0,0,0,0.6); }
 
-	.current-color-wrap { position: relative; width: 100%; height: 50px;  
-		&>span { display: inline-block; width: calc(100% - 2px); height: calc(100% - 2px); background: rgb(89, 255, 0); border: 1px solid #fff; }
-	}
-	.colors-wrap { position: relative; width: 100%; height: calc(70% - 25px); 
+	.colors-wrap { position: relative; width: 100%; height: 70%; 
 		&>div { width: 100%; 
 			&:nth-child(2) { height: 30%; background: linear-gradient(#fff, #000); }
 			&:nth-child(1) { height: 70%; background-repeat: no-repeat; background-image: url(/img/picker-color.png);
@@ -25,7 +27,7 @@ body, html { margin: 0; font-size: 0; line-height: 0; position: relative; height
 		}
 		&>span {}
 	}
-	.size-wrap { position: relative; width: 100%; height: calc(30% - 25px); 
+	.size-wrap { position: relative; width: 100%; height: 30%; 
 		&>div { width: 100%; height: 100%; position: relative; background-repeat: no-repeat; 
 				background-image: url(/img/size.png); background-size: 100% 100%; }
 		&>span {}
@@ -35,7 +37,8 @@ body, html { margin: 0; font-size: 0; line-height: 0; position: relative; height
 #eraser { 
 	position: absolute;
     top: 10px;
-    left: 10px;
+	left: 10px;
+	transition: .5s all;
 	display: inline-block;
 	width: 70px; height: 70px; 
 	cursor: pointer; 
@@ -55,7 +58,7 @@ body, html { margin: 0; font-size: 0; line-height: 0; position: relative; height
 #save-btn { background-image: url(/img/save.png); }
 #new-page-btn { background-image: url(/img/new.png); }
 
-.topbar-wrap { position: absolute; right: 58px; height: 52px; float: right; 
+.topbar-wrap { position: absolute; right: 58px; height: 50px; float: right; 
 	&>div { height: 100%; position: relative; display: flex; flex-direction: row; }
 	.tool-btn { float: right; background-size: 100%; width: 48px; margin: 5px 2% 0 0; height: 100%; 
 				background-repeat: no-repeat; cursor: pointer; }
@@ -84,3 +87,62 @@ body, html { margin: 0; font-size: 0; line-height: 0; position: relative; height
 }
 
 #color-pointer { top: 306.364px; }
+
+#bottom-control-wrap {
+	position: absolute;
+	left: 10%;
+	bottom: 0;
+	height: 40px;
+	width: 80%;
+	z-index: 100;
+	&>div {
+		position: relative;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-evenly;	
+	}
+}
+
+.round-button {
+	display: flex;
+	flex-direction: column;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	margin: 0;
+	padding: 0;
+	font-size: 0;
+	line-height: 0;
+	overflow: hidden;
+	background: attr(data-color);
+	border: 1 solid #eee;
+
+	&.active {
+		border: 1 solid #333;
+	}
+}
+
+#current-color-wrap {
+	background: none;
+	&>span { display: inline-block; width: 100%; height: 100%; background: rgb(89, 255, 0); }
+}
+#c-red { background: red; }
+#c-blue { background: blue; }
+#c-green { background: green; }
+#c-brown { background: brown; }
+#c-black { background: black; }
+
+
+
+#app.manual-mode {
+
+	#sidebar {
+		right: -50px;
+		transition: .5s all;
+	}
+
+	#eraser {
+		left: -150px;
+		transition: .5s all;
+	}
+}

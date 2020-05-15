@@ -1,4 +1,4 @@
-import { getLoc, getCanvasLoc, scaleValue, hsv2rgb, clrscr } from './common';
+import { getLoc, getCanvasLoc, scaleValue, hsv2rgb, clrscr, setColor, setCanvasSize } from './common';
 import $ from 'jquery';
 
 
@@ -181,7 +181,7 @@ export function colorMove(e, ui, settings, isMouse) {
 		
 		settings.color = '#'+hsv2rgb(hue, 100, 100).hex; 	
 	}
-	ui.currentColor.css({background: settings.color});
+	setColor(ui, settings.color);
 }
 // up
 export function colorUp(e, ui, settings) {
@@ -219,4 +219,15 @@ export function clearPage(e, ui) {
 
 	ui.context.fillStyle = '#fff';
 	ui.context.fillRect(0,0, ui.canvas[0].width, ui.canvas[0].height); 
+}
+
+
+
+export function toggleManualMode(e, ui, settings) {
+	e.preventDefault();
+	e.stopPropagation();
+
+	ui.app.toggleClass('manual-mode');
+	settings.manualMode = !settings.manualMode;
+	setCanvasSize(ui, settings);
 }

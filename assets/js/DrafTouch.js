@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import { sideBar, topBar } from './src/layout';
+import { sideBar, topBar, bottomControl } from './src/layout';
 import { setCanvasSize, clrscr } from './src/common';
-import { brushEvents, sizeEvents, colorEvents, eraserEvents }from './src/events';
+import { brushEvents, sizeEvents, colorEvents, eraserEvents, extras }from './src/events';
 
 
 class DrafTouch {
@@ -14,16 +14,20 @@ class DrafTouch {
 
   	// define html 
     let html = `
-      <div class="draftouch-wrap">
-        <div>
+      <div id="app">
+
+        <div class="drawing-area">
           <span id="eraser"></span>
-          
-          ${topBar()} 
-          
-          ${sideBar()} 
-        
           <canvas id="canvas">Canvas is not supported</canvas>
+          ${topBar()}          
         </div>
+        
+        <div class="sidebar-wrap" id="sidebar">
+          ${sideBar()}
+        </div>
+        
+        ${bottomControl()}
+
       </div>
     `;
 
@@ -35,6 +39,7 @@ class DrafTouch {
 
       ui = {
         canvas: canvas,
+        app: $('#app'),
         context: canvas[0].getContext('2d'),
         eraser: $('#eraser'),
         currentColor: $('#current-color'),
@@ -43,7 +48,8 @@ class DrafTouch {
         sizeHolder: $('#size-holder'),
         sizePointer: $('#size-pointer'),
         saveBtn: $('#save-btn'),
-        newPageBtn: $('#new-page-btn')
+        newPageBtn: $('#new-page-btn'),
+        sideBarEl: $('#sidebar')
       },
 
       settings = {
@@ -54,7 +60,8 @@ class DrafTouch {
         erasing: false,
         sizing: false,
         drawing: false,
-        
+        manualMode: true,
+
         color: '#59ff00', 
         brushSize: 5, 
         
@@ -69,10 +76,10 @@ class DrafTouch {
       window.mousedown = 0;
 
       // set canvas size 
-      setCanvasSize(ui);
-      $(window).resize(e => { setCanvasSize(ui) }); 
+      setCanvasSize(ui, settings);
+      $(window).resize(e => { setCanvasSize(ui, settings) }); 
       window.onorientationchange = function () {
-        setCanvasSize(ui);
+        setCanvasSize(ui, settings);
       }
       ui.context.lineCap = "round";
 
@@ -81,6 +88,7 @@ class DrafTouch {
       sizeEvents(ui, settings);
       colorEvents(ui, settings);
       eraserEvents(ui, settings);
+      extras(ui, settings);
 
       // remove sidebar scroll event
       $('#sidebar').scroll(e=>{e.preventDefault(); e.stopPropagation(); return false; });

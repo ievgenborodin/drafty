@@ -26,35 +26,28 @@ body, html {
     width: 100%;
     height: 100%; }
 
+#sidebar {
+  transition: .5s all; }
+
 .sidebar-wrap {
   height: 100%;
-  width: 52px;
+  width: 50px;
   position: absolute;
   top: 0;
   right: 0;
   cursor: pointer; }
   .sidebar-wrap > div {
     position: relative;
-    height: calc(100% - 2px);
-    width: calc(100% - 2px);
+    height: 100%;
+    width: 100%;
     box-shadow: 3px 0 rgba(0, 0, 0, 0.6);
     -moz-box-shadow: 3px 0 rgba(0, 0, 0, 0.6);
     -webkit-box-shadow: 3px 0 rgba(0, 0, 0, 0.6);
     -o-box-shadow: 3px 0 rgba(0, 0, 0, 0.6); }
-  .sidebar-wrap .current-color-wrap {
-    position: relative;
-    width: 100%;
-    height: 50px; }
-    .sidebar-wrap .current-color-wrap > span {
-      display: inline-block;
-      width: calc(100% - 2px);
-      height: calc(100% - 2px);
-      background: #59ff00;
-      border: 1px solid #fff; }
   .sidebar-wrap .colors-wrap {
     position: relative;
     width: 100%;
-    height: calc(70% - 25px); }
+    height: 70%; }
     .sidebar-wrap .colors-wrap > div {
       width: 100%; }
       .sidebar-wrap .colors-wrap > div:nth-child(2) {
@@ -68,7 +61,7 @@ body, html {
   .sidebar-wrap .size-wrap {
     position: relative;
     width: 100%;
-    height: calc(30% - 25px); }
+    height: 30%; }
     .sidebar-wrap .size-wrap > div {
       width: 100%;
       height: 100%;
@@ -81,6 +74,7 @@ body, html {
   position: absolute;
   top: 10px;
   left: 10px;
+  transition: .5s all;
   display: inline-block;
   width: 70px;
   height: 70px;
@@ -108,7 +102,7 @@ body, html {
 .topbar-wrap {
   position: absolute;
   right: 58px;
-  height: 52px;
+  height: 50px;
   float: right; }
   .topbar-wrap > div {
     height: 100%;
@@ -148,3 +142,63 @@ body, html {
 
 #color-pointer {
   top: 306.364px; }
+
+#bottom-control-wrap {
+  position: absolute;
+  left: 10%;
+  bottom: 0;
+  height: 40px;
+  width: 80%;
+  z-index: 100; }
+  #bottom-control-wrap > div {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly; }
+
+.round-button {
+  display: flex;
+  flex-direction: column;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  margin: 0;
+  padding: 0;
+  font-size: 0;
+  line-height: 0;
+  overflow: hidden;
+  background: attr(data-color);
+  border: 1 solid #eee; }
+  .round-button.active {
+    border: 1 solid #333; }
+
+#current-color-wrap {
+  background: none; }
+  #current-color-wrap > span {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: #59ff00; }
+
+#c-red {
+  background: red; }
+
+#c-blue {
+  background: blue; }
+
+#c-green {
+  background: green; }
+
+#c-brown {
+  background: brown; }
+
+#c-black {
+  background: black; }
+
+#app.manual-mode #sidebar {
+  right: -50px;
+  transition: .5s all; }
+
+#app.manual-mode #eraser {
+  left: -150px;
+  transition: .5s all; }

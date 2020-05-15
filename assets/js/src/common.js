@@ -2,10 +2,14 @@
  * Set Canvas Size
  * 
  */
-export function setCanvasSize(ui) {
+export function setCanvasSize(ui, settings) {
 	let data = ui.context.getImageData(0,0, canvas.width, canvas.height);
-	ui.canvas.attr('width', window.innerWidth-50 + 'px').attr('height', window.innerHeight + 'px');
+	let w = window.innerWidth;
+	if (settings.manualMode)
+		w -= 50;
+	ui.canvas.attr('width', w + 'px').attr('height', window.innerHeight + 'px');
 	ui.context.putImageData(data, 0, 0);
+	ui.context.lineCap = "round";
 }
 
 
@@ -107,4 +111,14 @@ export function clrscr(ui, settings) {
 	ui.context.fillStyle = "#fff";
 	ui.context.fillRect(0,0, ui.canvas[0].width, ui.canvas[0].height);
 	ui.context.fillStyle = settings.color;
+}
+
+
+
+export function setColor(ui, color) {
+	if ( ! ui.currentColor)
+		return 
+
+	//ui.currentColor.css({borderColor: color});
+	ui.currentColor.css({background: color});
 }
