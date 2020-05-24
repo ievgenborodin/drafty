@@ -1,4 +1,4 @@
-import { getLoc, getCanvasLoc, scaleValue, hsv2rgb, clrscr, setColor, setCanvasSize } from './common';
+import { getLoc, getCanvasLoc, getObjectLoc, scaleValue, hsv2rgb, clrscr, setColor, setCanvasSize } from './common';
 import $ from 'jquery';
 
 
@@ -181,7 +181,7 @@ export function colorMove(e, ui, settings, isMouse) {
 		
 		settings.color = '#'+hsv2rgb(hue, 100, 100).hex; 	
 	}
-	setColor(ui, settings.color);
+	//setColor(ui, settings.color);
 }
 // up
 export function colorUp(e, ui, settings) {
@@ -229,5 +229,75 @@ export function toggleManualMode(e, ui, settings) {
 
 	ui.app.toggleClass('manual-mode');
 	settings.manualMode = !settings.manualMode;
+
+	settings.coloring = false;
+    settings.erasing = false;
+    settings.sizing = false;
+	settings.drawing = false;
+	settings.isSlider = false;
+	window.mousedown = 0;
+	
 	setCanvasSize(ui, settings);
+}
+
+
+/**
+ * Slider control
+ * 
+ */
+
+// down
+export function sliderDown(e, ui, settings, isMouse) {
+	e.preventDefault();
+	e.stopPropagation();
+
+	settings.isSlider = true;
+
+	settings.loc0 = getObjectLoc(e, ui.slider[0], isMouse, ui.slider[0].id);
+	
+	settings.locPrev = $.extend({}, settings.loc0[0]);
+}
+// move
+export function sliderMove(e, ui, settings, isMouse) {	
+	if (!settings.isSlider) 
+		return; 
+		
+	e.preventDefault();
+	e.stopPropagation();
+
+	settings.currentSliderPos = +ui.slider[0].style.left.split('px')[0] || 0;
+
+	settings.loc = getObjectLoc(e, ui.slider[0], isMouse, ui.slider[0].id);
+
+	let diff = settings.locPrev.x - settings.loc[0].x;
+	
+	settings.currentSliderPos -= diff;
+	
+	if (settings.currentSliderPos > 10 || settings.currentSliderPos < (ui.sliderWrap.width() - ui.slider.width()))
+		return;
+
+	ui.slider[0].style.left = settings.currentSliderPos + 'px';
+		
+	settings.locPrev = $.extend({}, settings.loc[0]);
+}
+// up
+export function sliderUp(e, ui, settings) {
+	e.preventDefault();
+	settings.isSlider = false;
+	settings.loc0 = {};
+	settings.loc = {};
+}
+// button click
+export function sliderClick(e, ui, settings) {
+	e.preventDefault();
+	e.stopPropagation();
+	let color = e.currentTarget.id;
+	if (!color || color.indexOf('c-')===-1)
+	  return;
+	  
+	ui.buttons.removeClass('active');  
+	e.currentTarget.classList.add('active');
+	// set color
+	color = color.split('c-')[1];
+	settings.color = color
 }

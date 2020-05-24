@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { sideBar, topBar, bottomControl } from './src/layout';
 import { setCanvasSize, clrscr } from './src/common';
-import { brushEvents, sizeEvents, colorEvents, eraserEvents, extras }from './src/events';
+import { brushEvents, sizeEvents, colorEvents, eraserEvents, extras, sliderEvents }from './src/events';
 
 
 class DrafTouch {
@@ -14,14 +14,15 @@ class DrafTouch {
 
   	// define html 
     let html = `
-      <div id="app">
+      <div id="app" class="manual-mode">
 
         <div class="drawing-area">
           <span id="eraser"></span>
           <canvas id="canvas">Canvas is not supported</canvas>
-          ${topBar()}          
         </div>
         
+        ${topBar()}          
+
         <div class="sidebar-wrap" id="sidebar">
           ${sideBar()}
         </div>
@@ -49,7 +50,10 @@ class DrafTouch {
         sizePointer: $('#size-pointer'),
         saveBtn: $('#save-btn'),
         newPageBtn: $('#new-page-btn'),
-        sideBarEl: $('#sidebar')
+        sideBarEl: $('#sidebar'),
+        slider: $('#bottom-slider'),
+        sliderWrap: $('#bottom-control-wrap'),
+        buttons: $('.round-button:not(#current-color-wrap)')
       },
 
       settings = {
@@ -60,10 +64,11 @@ class DrafTouch {
         erasing: false,
         sizing: false,
         drawing: false,
-        manualMode: true,
+        manualMode: false,
+        isSlider: false,
 
         color: '#59ff00', 
-        brushSize: 5, 
+        brushSize: 7, 
         
         loc0: {}, loc: {}, locPrev: {}, 
         locSize: {}
@@ -89,6 +94,7 @@ class DrafTouch {
       colorEvents(ui, settings);
       eraserEvents(ui, settings);
       extras(ui, settings);
+      sliderEvents(ui, settings);
 
       // remove sidebar scroll event
       $('#sidebar').scroll(e=>{e.preventDefault(); e.stopPropagation(); return false; });

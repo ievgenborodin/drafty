@@ -26,11 +26,14 @@ body, html {
     width: 100%;
     height: 100%; }
 
+.drawing-area {
+  height: calc(100% - 43px); }
+
 #sidebar {
   transition: .5s all; }
 
 .sidebar-wrap {
-  height: 100%;
+  height: calc(100% - 43px);
   width: 50px;
   position: absolute;
   top: 0;
@@ -100,7 +103,9 @@ body, html {
   background-image: url(/img/new.png); }
 
 .topbar-wrap {
+  transition: .5s all;
   position: absolute;
+  top: 0;
   right: 58px;
   height: 50px;
   float: right; }
@@ -145,32 +150,52 @@ body, html {
 
 #bottom-control-wrap {
   position: absolute;
-  left: 10%;
+  left: 0;
   bottom: 0;
-  height: 40px;
-  width: 80%;
-  z-index: 100; }
-  #bottom-control-wrap > div {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly; }
+  height: 43px;
+  width: 100%;
+  z-index: 100;
+  overflow: hidden; }
+
+#bottom-slider {
+  height: 100%;
+  min-width: 100%;
+  position: absolute;
+  display: flex;
+  overflow-x: visible;
+  overflow-y: hidden;
+  left: 0;
+  bottom: 0; }
+  #bottom-slider:after {
+    content: " ";
+    width: 100%;
+    bottom: -30px;
+    height: 50px;
+    display: block;
+    position: absolute;
+    z-index: -1;
+    background: radial-gradient(ellipse farthest-corner at 50% 37%, #000000 0%, #ffffff 77%);
+    border-radius: 40%; }
 
 .round-button {
-  display: flex;
-  flex-direction: column;
-  width: 34px;
-  height: 34px;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  margin: 0;
+  margin: 0 10px;
   padding: 0;
   font-size: 0;
   line-height: 0;
   overflow: hidden;
   background: attr(data-color);
-  border: 1 solid #eee; }
-  .round-button.active {
-    border: 1 solid #333; }
+  box-shadow: 3px 9px 6px;
+  transform: scale(0.9) translateY(5px);
+  transition: all .1s ease-in; }
+  .round-button:hover, .round-button.active {
+    transform: scale(1) translateY(0px);
+    width: 34px;
+    height: 34px; }
 
 #current-color-wrap {
   background: none; }
@@ -178,22 +203,47 @@ body, html {
     display: inline-block;
     width: 100%;
     height: 100%;
-    background: #59ff00; }
+    background: linear-gradient(to bottom, red 15%, purple 30%, blue 45%, green 60%, yellow 75%, red 90%); }
 
-#c-red {
-  background: red; }
+#c-grey {
+  background: grey; }
 
-#c-blue {
-  background: blue; }
-
-#c-green {
-  background: green; }
+#c-black {
+  background: black; }
 
 #c-brown {
   background: brown; }
 
-#c-black {
-  background: black; }
+#c-red {
+  background: red; }
+
+#c-pink {
+  background: pink; }
+
+#c-orange {
+  background: orange; }
+
+#c-yellow {
+  background: yellow; }
+
+#c-white {
+  background: white; }
+
+#c-green {
+  background: green; }
+
+#c-teal {
+  background: teal; }
+
+#c-blue {
+  background: blue; }
+
+#c-purple {
+  background: purple; }
+
+#app.manual-mode .topbar-wrap {
+  top: -70px;
+  transition: .5s all; }
 
 #app.manual-mode #sidebar {
   right: -50px;

@@ -38,14 +38,22 @@ export function topBar() {
 export function bottomControl() {
 	return `
 		<div id="bottom-control-wrap">
-			<div>
-				<div class="round-button" id="c-red"></div>
-				<div class="round-button" id="c-blue"></div>
-				<div class="round-button" id="c-green"></div>
-
+			<div id="bottom-slider" style="left:0px">
 				<div class="round-button" id="current-color-wrap">
 					<span id="current-color"></span>
 				</div>
+				<div class="round-button" id="c-grey"></div>
+				<div class="round-button" id="c-black"></div>
+				<div class="round-button" id="c-brown"></div>
+				<div class="round-button" id="c-red"></div>
+				<div class="round-button" id="c-pink"></div>
+				<div class="round-button" id="c-orange"></div>
+				<div class="round-button" id="c-yellow"></div>
+				<div class="round-button" id="c-white"></div>
+				<div class="round-button" id="c-green"></div>
+				<div class="round-button" id="c-teal"></div>
+				<div class="round-button" id="c-blue"></div>
+				<div class="round-button" id="c-purple"></div>
 			</div>
 		</div>
 	`;

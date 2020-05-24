@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { brushDown, brushMove, brushUp, sizeDown, sizeMove, sizeUp,  
+import { brushDown, brushMove, brushUp, sizeDown, sizeMove, sizeUp, sliderDown, sliderMove, sliderUp, sliderClick,
          colorDown, colorMove, colorUp, eraserDown, eraserUp, clearPage, toggleManualMode } from './handlers';
 
 /**
@@ -80,7 +80,19 @@ export function eraserEvents(ui, settings) {
 
 
 export function extras(ui, settings) {
-
   ui.currentColor.on('click', e => toggleManualMode(e, ui, settings, false));
+}
 
+
+export function sliderEvents(ui, settings) {
+  //touch
+  ui.slider.on('touchstart', e => sliderDown(e, ui, settings, false));
+  ui.slider.on('touchmove', e => sliderMove(e, ui, settings, false));         
+  ui.slider.on('touchend', e => sliderUp(e, ui, settings, false));
+  //mouse
+  ui.slider.on('mousedown', e => sliderDown(e, ui, settings, true));
+  ui.slider.on('mousemove', e => sliderMove(e, ui, settings, true));
+  ui.slider.on('mouseup', e => sliderUp(e, ui, settings, true));
+  // button click "color select"
+  ui.buttons.on('click', e=> sliderClick(e, ui, settings));
 }

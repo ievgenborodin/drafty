@@ -31,27 +31,36 @@ export function getLoc(e, isMouse){
  * 
  */
 export function getCanvasLoc(e, canvas, isMouse) {
+	return getObjectLoc(e, canvas, isMouse, 'canvas');
+}
+
+/**
+ * Get Object Location 
+ * 
+ */
+export function getObjectLoc(e, object, isMouse, id) {
 	e.preventDefault(e); 
 
 	let loc, 
-		bbox = canvas.getBoundingClientRect();
-	
+		bbox = object.getBoundingClientRect();
+
 	if (isMouse) 
 		return [{ 
-			x: e.clientX - bbox.left * (canvas.width / bbox.width),
-  		    y: e.clientY - bbox.top * (canvas.height / bbox.height) 
+			x: e.clientX - bbox.left * (~~object.width / bbox.width),
+  		    y: e.clientY - bbox.top * (~~object.height / bbox.height) 
   		}];
 
 	else {
 		let touches = e.originalEvent.touches,
 			arr = [];
 		for (var i=0; i<touches.length; i++) 
-			if (touches[i].target.id == 'canvas')
+			if (touches[i].target.id == id)
 				arr.push({ x: touches[i].pageX, y: touches[i].pageY });
 
 		return arr; 
 	}
 }
+
 
 
 /**
